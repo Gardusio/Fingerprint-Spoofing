@@ -33,20 +33,19 @@ class Plotter:
             plt.savefig("./plots/feature_%d_hist.pdf" % (dIdx + 1))
         plt.show()
 
+    def plot_scatter(self, genuines, counterfeits, i, j):
+        plt.figure()
+        plt.xlabel(self.features_idx[i])
+        plt.ylabel(self.features_idx[j])
+        plt.scatter(x=genuines[i], y=genuines[j], label="Genuines")
+        plt.scatter(x=counterfeits[i], y=counterfeits[j], label="Counterfeits")
+        plt.legend()
+        plt.savefig(f"./plots/scatter_{i}-{j}_hist.pdf")
+
     def plot_scatters(self, genuines, counterfeits):
-        # TODO: just the first 2 for now
-        for i in range(2):
-            for j in range(2):
-                if i != j:
-                    plt.figure()
-                    plt.xlabel(self.features_idx[i])
-                    plt.ylabel(self.features_idx[j])
-                    plt.scatter(x=genuines[i], y=genuines[j], label="Genuines")
-                    plt.scatter(
-                        x=counterfeits[i], y=counterfeits[j], label="Counterfeits"
-                    )
-                    plt.legend()
-                    plt.savefig(f"./plots/scatter_{i}-{j}_hist.pdf")
+        self.plot_scatter(genuines, counterfeits, 0, 1)
+        self.plot_scatter(genuines, counterfeits, 2, 3)
+        self.plot_scatter(genuines, counterfeits, 4, 5)
         plt.show()
 
 

@@ -1,10 +1,10 @@
-import sys
 from loader import DatasetLoader
 from plotter import Plotter
 
 
 def main():
 
+    # TODO: specify ds file path via args
     ds = DatasetLoader().load()
 
     features_matrix, labels = ds
