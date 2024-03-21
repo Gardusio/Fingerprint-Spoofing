@@ -19,13 +19,8 @@ def main():
     plt = Plotter()
     # plt.plot_features(genuines, counterfeits)
     # plt.plot_scatters(genuines, counterfeits)
+    # plt.print_features_stats(genuines, counterfeits)
 
-    #plt.print_feature_stats(genuines, counterfeits, 0)
-    #plt.print_feature_stats(genuines, counterfeits, 1)
-    #plt.print_feature_stats(genuines, counterfeits, 2)
-    #plt.print_feature_stats(genuines, counterfeits, 3)
-    plt.print_feature_stats(genuines, counterfeits, 4)
-    plt.print_feature_stats(genuines, counterfeits, 5)
 
 
 if __name__ == "__main__":

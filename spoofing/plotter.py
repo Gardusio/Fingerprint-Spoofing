@@ -62,6 +62,14 @@ class Plotter:
             geat_feature_var(counterfeits, f_idx),
         )
 
+    def print_features_stats(self, genuines, counterfeits):
+        self.print_feature_stats(genuines, counterfeits, 0)
+        self.print_feature_stats(genuines, counterfeits, 1)
+        self.print_feature_stats(genuines, counterfeits, 2)
+        self.print_feature_stats(genuines, counterfeits, 3)
+        self.print_feature_stats(genuines, counterfeits, 4)
+        self.print_feature_stats(genuines, counterfeits, 5)
+
 
 """
 rest of lab2
