@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
+from analytics import *
 
 
 class Plotter:
-
     def __init__(self) -> None:
         self.num_features = 6
         self.features_idx = {
@@ -15,19 +15,16 @@ class Plotter:
         }
 
     def plot_features(self, genuines, counterfeits):
-        # TODO: REFACTOR THIS 6 INTO A DS CLASS
         for dIdx in range(self.num_features):
             plt.figure()
             plt.xlabel(self.features_idx[dIdx])
-            plt.hist(genuines[dIdx], density=True, bins=20, alpha=0.4, label="Genuine")
+            plt.hist(genuines[dIdx], bins=20, alpha=0.4, label="Genuine")
             plt.hist(
                 counterfeits[dIdx],
-                density=True,
                 bins=20,
                 alpha=0.4,
                 label="Counterfeit",
             )
-
             plt.legend()
             plt.tight_layout()
             plt.savefig("./plots/feature_%d_hist.pdf" % (dIdx + 1))
@@ -47,6 +44,23 @@ class Plotter:
         self.plot_scatter(genuines, counterfeits, 2, 3)
         self.plot_scatter(genuines, counterfeits, 4, 5)
         plt.show()
+
+    def print_feature_stats(self, genuines, counterfeits, f_idx):
+        print(
+            f"Genuines mean for feature {f_idx+1}: ", geat_feature_mean(genuines, f_idx)
+        )
+        print(
+            f"Counterfeits mean for feature {f_idx+1}: ",
+            geat_feature_mean(counterfeits, f_idx),
+        )
+        print(
+            f"Genuines variance for feature {f_idx+1}: ",
+            geat_feature_var(genuines, f_idx),
+        )
+        print(
+            f"Counterfeits variance for feature {f_idx+1}: ",
+            geat_feature_var(counterfeits, f_idx),
+        )
 
 
 """

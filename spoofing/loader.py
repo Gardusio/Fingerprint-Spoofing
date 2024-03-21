@@ -3,7 +3,7 @@ import sys
 
 
 class DatasetLoader:
-    
+
     def __init__(self, file_path="trainData.txt", separator=" , "):
         self.file_path = file_path
         self.separator = separator
