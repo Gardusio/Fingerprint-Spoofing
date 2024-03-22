@@ -18,10 +18,10 @@ class Plotter:
         for dIdx in range(self.num_features):
             plt.figure()
             plt.xlabel(self.features_idx[dIdx])
-            plt.hist(genuines[dIdx], bins=20, alpha=0.4, label="Genuine")
+            plt.hist(genuines[dIdx], bins=100, alpha=0.4, label="Genuine")
             plt.hist(
                 counterfeits[dIdx],
-                bins=20,
+                bins=100,
                 alpha=0.4,
                 label="Counterfeit",
             )

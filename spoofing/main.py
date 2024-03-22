@@ -17,7 +17,7 @@ def main():
     counterfeits = features_matrix[:, labels == 0]
 
     plt = Plotter()
-    # plt.plot_features(genuines, counterfeits)
+    plt.plot_features(genuines, counterfeits)
     # plt.plot_scatters(genuines, counterfeits)
     # plt.print_features_stats(genuines, counterfeits)
 
