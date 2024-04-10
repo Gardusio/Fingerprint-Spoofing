@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from analytics import *
 
 
 class Plotter:
@@ -14,10 +13,12 @@ class Plotter:
             5: "Feature 6",
         }
 
-    def plot_features(self, genuines, counterfeits):
-        for dIdx in range(self.num_features):
+    def plot_features(
+        self, genuines, counterfeits, save=False, range_v=6, x_label="", name=""
+    ):
+        for dIdx in range(0, range_v):
             plt.figure()
-            plt.xlabel(self.features_idx[dIdx])
+            plt.xlabel(x_label + f" {dIdx}")
             plt.hist(genuines[dIdx], bins=100, alpha=0.4, label="Genuine")
             plt.hist(
                 counterfeits[dIdx],
@@ -27,7 +28,8 @@ class Plotter:
             )
             plt.legend()
             plt.tight_layout()
-            plt.savefig("./plots/feature_%d_hist.pdf" % (dIdx + 1))
+            if save:
+                plt.savefig(f"./plots/{name}_%d_hist.pdf" % (dIdx + 1))
         plt.show()
 
     def plot_scatter(self, genuines, counterfeits, i, j):
@@ -69,35 +71,3 @@ class Plotter:
         self.print_feature_stats(genuines, counterfeits, 3)
         self.print_feature_stats(genuines, counterfeits, 4)
         self.print_feature_stats(genuines, counterfeits, 5)
-
-
-"""
-rest of lab2
-    def print_dataset_analytics(self, features_matrix, centered_features_matrix):
-
-        variance = features_matrix.var(1)
-        std_deviation = features_matrix.std(1)
-        covariance_matrix = (
-            centered_features_matrix
-            @ centered_features_matrix.T
-            / float(centered_features_matrix.shape[1])
-        )
-        print(f"Dataset covariance matrix: {covariance_matrix}")
-        print(f"Dataset variance: {variance}")
-        print(f"Dataset standard deviation: {std_deviation}")
-
-    def print_classes_analytics(self, setosas, versicolors, virginicas):
-        setosas_var = setosas.var(1)
-        versicolors_var = versicolors.var(1)
-        virginicas_var = virginicas.var(1)
-        print(f"Setosa variance: {setosas_var}")
-        print(f"Versicolors variance: {versicolors_var}")
-        print(f"Virginicas variance: {virginicas_var}")
-
-        setosas_mean = setosas.mean(axis=1).reshape(setosas.shape[0], 1)
-        versicolors_mean = versicolors.mean(axis=1).reshape(versicolors.shape[0], 1)
-        virginicas_mean = virginicas.mean(axis=1).reshape(virginicas.shape[0], 1)
-        print(f"Setosas mean: {setosas_mean}")
-        print(f"Versicolors mean: {versicolors_mean}")
-        print(f"Virginicas mean: {virginicas_mean}")
-"""

@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 
 
 class DatasetLoader:
@@ -31,3 +30,16 @@ class DatasetLoader:
         labels = np.array(raw_labels)
 
         return (features_matrix, labels)
+
+    def split_ds_2to1(self, D, L, seed=0):
+        nTrain = int(D.shape[1] * 2.0 / 3.0)
+        np.random.seed(seed)
+        idx = np.random.permutation(D.shape[1])
+        idxTrain = idx[0:nTrain]
+        idxTest = idx[nTrain:]
+        DTR = D[:, idxTrain]
+        DVAL = D[:, idxTest]
+        LTR = L[idxTrain]
+        LVAL = L[idxTest]
+
+        return DTR, LTR, DVAL, LVAL
