@@ -15,14 +15,13 @@ def main():
     ############################################## LAB 2 ##########################################
     """
     # select all rows (:), match column_idx with mask_idx
-    # Q1: Why don't just include the labels in the last column in the matrix?
     # Q2: if ds is big, how to do this in a single pass while leveraging np?
     genuines = get_genuines_samples(samples, labels)
     counterfeits = get_counterfeits_samples(samples, labels)
 
     plt.plot_hist(genuines, counterfeits, x_label="Feature")
     plt.plot_scatters(genuines, counterfeits)
-    plt.print_features_stats(genuines, counterfeits)
+
     """
 
     ############################################## LAB 3 ##########################################
@@ -46,19 +45,19 @@ def main():
     )
     """
     ############################################## LAB 3 - LDA classification ######################
-
+    """
     training_samples, training_labels, validation_samples, validation_labels = (
         loader.split_ds_2to1(samples, labels)
     )
 
     Ut_lda = get_lda_matrix(training_samples, training_labels)
     training_samples_lda = Ut_lda.T @ training_samples
-    """plt.plot_hist(
+    plt.plot_features(
         get_genuines_samples(training_samples_lda, training_labels),
         get_counterfeits_samples(training_samples_lda, training_labels),
         x_label="LDA direction",
         range_v=1,
-    )"""
+    )
     validation_samples_lda = Ut_lda.T @ validation_samples
     num_validation_samples = float(validation_samples_lda.shape[1])
     threshold = get_lda_mean_dist_treshold(training_samples_lda, training_labels)
@@ -95,6 +94,34 @@ def main():
 
     for m, t, error_rate in results:
         print(f"Error rate with {m} pca dimensions and threshold {t} is: ", error_rate)
+    """
+
+    ############################################## LAB 4 - Fitting Gaussians #######################
+    genuines = get_genuines_samples(samples, labels)
+    counterfeits = get_counterfeits_samples(samples, labels)
+
+    for f_idx in range(0, 6):
+        genuines_f1 = genuines[f_idx, :].reshape(1, genuines.shape[1])
+
+        g_f1_mean = get_mean_vector(genuines_f1)
+        g_f1_cov = get_covariance_matrix(genuines_f1)
+
+        genuines_f1_row = vrow(genuines_f1[0, :])
+
+        genuines_f1_min = genuines_f1_row.min()
+        genuines_f1_max = genuines_f1_row.max()
+
+        plot = np.linspace(genuines_f1_min, genuines_f1_max, genuines_f1.shape[1])
+        gaussian_pdf = gaussian_density(vrow(plot), g_f1_mean, g_f1_cov)
+
+        plt.plot_1d_gau(
+            save=True,
+            c_name="genuine",
+            f_idx=f_idx,
+            plot=plot.ravel(),
+            pdf=gaussian_pdf,
+            sample_set=genuines_f1,
+        )
 
 
 if __name__ == "__main__":

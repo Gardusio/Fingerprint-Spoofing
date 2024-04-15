@@ -4,9 +4,9 @@
 #### Feature 1
 - The histogram for feature 1 shows both classes have a good approximation of a gaussian as the distribution for this feature. There's one mode around the mean for both. 
 
-- There's a large overlap around zero, that is approximately the mean of both classes [G: 0.0005, C: 0.003]. Genuines values for f1 can take all the values of Counterfeits and more. Genuine set shows it can reach greather absolute values for this feature (Fake's never reach around 4/-4) <br>
+- There's a large overlap around zero, that is approximately the mean of both classes [G_mean: 0.0005, C_mean: 0.003]. Genuines values for f1 can take all the values of Counterfeits and more. Genuine set shows it can reach greather absolute values for this feature (Fake's never reach around 4/-4) <br>
 
-- The Genuine set shows more variance for this feature [G: 1,43, C: 0.57].
+- The Genuine set shows more variance for this feature [G_var: 1,43, C_var: 0.57].
 
 Taken alone, this feature can't provide a good decision boundary.
 
@@ -15,7 +15,7 @@ Taken alone, this feature can't provide a good decision boundary.
 
 The situation is dual with respect of feature 1
 
-- There's a large overlap around zero, that is approximately the mean of both classes [G: -0.0085, C: 0.018]. Counterfeits values for f2 can take all the values of Genuines and more. Counterfeits set shows it can reach greather absolute values for this feature (Fake's never reach around 4/-4)<br>
+- There's a large overlap around zero, that is approximately the mean of both classes [G_mean: -0.0085, C_mean: 0.018]. Counterfeits values for f2 can take all the values of Genuines and more. Counterfeits set shows it can reach greather absolute values for this feature (Fake's never reach around 4/-4)<br>
 
 - The Counterfeits set shows more variance for this feature [G: 0.58, C: 1.42].
 

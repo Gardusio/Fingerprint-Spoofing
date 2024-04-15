@@ -1,5 +1,14 @@
 import numpy as np
+import math
 from scipy.linalg import eigh
+
+
+def vrow(v):
+    return v.reshape(1, v.shape[0])
+
+
+def vcol(v):
+    return v.reshape(1, v.shape[0])
 
 
 def get_class_samples(samples, labels, c):
@@ -33,6 +42,7 @@ def get_mean_vector(samples):
 
 
 def get_covariance_matrix(features_matrix):
+
     ds_mean = features_matrix.mean(axis=1).reshape(features_matrix.shape[0], 1)
 
     centered_features = features_matrix - ds_mean
@@ -176,10 +186,38 @@ def get_accuracy_as_pca_dims_function(
             pmean_diff_threshold_m,
             validation_labels,
         )
-        """plt.plot_hist(
-            genuines=get_genuines_samples(training_pcad_m_lda, training_labels),
-            counterfeits=get_counterfeits_samples(training_pcad_m_lda, training_labels),
-            range_v=1,
-        )"""
+
         results.append((m, pmean_diff_threshold_m, error_rate_m))
     return results
+
+
+# GAUSSIAN DENSITY
+def log_gaussian_density_set(sample_set, ds_mean_vec, cov_matrix):
+
+    ll = [
+        log_gaussian_density(sample_set[:, i : i + 1], ds_mean_vec, cov_matrix)
+        for i in range(sample_set.shape[1])
+    ]
+
+    return np.array(ll).ravel()
+
+
+def log_gaussian_density(sample, ds_mean_vec, cov_matrix):
+    n_features = ds_mean_vec.shape[0]
+    _, cov_matrix_log_det = np.linalg.slogdet(cov_matrix)
+    inverse_cov_matrix = np.linalg.inv(cov_matrix)
+    centered_sample = sample - ds_mean_vec
+
+    log_2pi = math.log(2 * math.pi)
+
+    result = (
+        (-(n_features / 2) * log_2pi)
+        - (cov_matrix_log_det / 2)
+        - (((centered_sample.T) @ inverse_cov_matrix @ centered_sample) / 2)
+    )
+
+    return result.ravel()
+
+
+def gaussian_density(sample_set, ds_mean_vec, cov_matrix):
+    return np.exp(log_gaussian_density_set(sample_set, ds_mean_vec, cov_matrix))
