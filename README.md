@@ -11,6 +11,7 @@ Would be nice to have some sort of interactive journey...
 
 ### Prio
 - Refactor and conclude mv-gaussians fitting
+- Revise the mean of "peak" and "modes" in the preliminar analysis, since it's not clear what a peak is, it's not clear what "one peak shown" mean.
 
 ### Dataset
 1) Specify path to load dataset
