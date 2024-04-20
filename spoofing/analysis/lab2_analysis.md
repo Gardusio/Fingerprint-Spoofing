@@ -51,7 +51,7 @@ Taken alone, this feature can't provide a good decision boundary.
 
 
 #### Feature 5
-- Genuines seems to follow a binomial gaussian distribution with two modes around -1 and 1, while Counterfeits shows a trimodal distribution with peaks around -1, 0, 1.
+- Genuines seems to follow a bimodal gaussian distribution with two modes around -1 and 1, while Counterfeits shows a trimodal distribution with peaks around -1, 0, 1.
 
 - Therefore, there's some overlap in the ranges [-2, 0] and [0,2] while in [-0,5, 0.5]  there are very few Genuine samples. 
 

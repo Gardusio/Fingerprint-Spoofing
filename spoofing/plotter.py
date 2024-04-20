@@ -51,14 +51,27 @@ class Plotter:
         self.plot_scatter(genuines, counterfeits, 4, 5)
         plt.show()
 
-    def plot_1d_gau(self, sample_set, plot, pdf, c_name, f_idx="", save=False):
+    def plot_1d_gau(
+        self,
+        c1_sample_set,
+        c1_plot,
+        c1_pdf,
+        c2_sample_set,
+        c2_plot,
+        c2_pdf,
+        f_idx="",
+        save=False,
+    ):
         plt.figure()
-        plt.hist(sample_set.ravel(), bins=50, density=True)
-        plt.plot(plot, pdf)
+        plt.xlabel(f"Feature {f_idx}")
+        plt.hist(c1_sample_set, bins=50, density=True, alpha=0.4, label="Genuines")
+        plt.plot(c1_plot, c1_pdf, label="Genuines Estimated PDF")
+        plt.hist(c2_sample_set, bins=50, density=True, alpha=0.4, label="Counterfeits")
+        plt.plot(c2_plot, c2_pdf, label="Counterfeits Estimated PDF")
 
         if save:
             plt.savefig(
-                f"./plots/features_hists/{c_name}_f_%d_hist_with_gaussian.pdf"
-                % (f_idx + 1)
+                f"./plots/features_hists/f_%d_hist_with_gaussian.pdf" % (f_idx + 1)
             )
+        plt.legend()
         plt.show()

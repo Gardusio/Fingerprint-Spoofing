@@ -97,30 +97,32 @@ def main():
     """
 
     ############################################## LAB 4 - Fitting Gaussians #######################
+
     genuines = get_genuines_samples(samples, labels)
     counterfeits = get_counterfeits_samples(samples, labels)
 
     for f_idx in range(0, 6):
-        genuines_f1 = genuines[f_idx, :].reshape(1, genuines.shape[1])
+        genuines_feature_samples = genuines[f_idx, :].reshape(1, genuines.shape[1])
+        counterfeits_feature_samples = counterfeits[f_idx, :].reshape(
+            1, counterfeits.shape[1]
+        )
 
-        g_f1_mean = get_mean_vector(genuines_f1)
-        g_f1_cov = get_covariance_matrix(genuines_f1)
-
-        genuines_f1_row = vrow(genuines_f1[0, :])
-
-        genuines_f1_min = genuines_f1_row.min()
-        genuines_f1_max = genuines_f1_row.max()
-
-        plot = np.linspace(genuines_f1_min, genuines_f1_max, genuines_f1.shape[1])
-        gaussian_pdf = gaussian_density(vrow(plot), g_f1_mean, g_f1_cov)
+        g_plot, g_gaussian_pdf = fit_gaussian_to_feature(
+            genuines_feature_samples, f_idx
+        )
+        c_plot, c_gaussian_pdf = fit_gaussian_to_feature(
+            counterfeits_feature_samples, f_idx
+        )
 
         plt.plot_1d_gau(
-            save=True,
-            c_name="genuine",
+            c1_sample_set=genuines_feature_samples.ravel(),
+            c1_plot=g_plot,
+            c1_pdf=g_gaussian_pdf,
+            c2_sample_set=counterfeits_feature_samples.ravel(),
+            c2_plot=c_plot,
+            c2_pdf=c_gaussian_pdf,
             f_idx=f_idx,
-            plot=plot.ravel(),
-            pdf=gaussian_pdf,
-            sample_set=genuines_f1,
+            save=True,
         )
 
 
