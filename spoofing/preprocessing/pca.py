@@ -3,10 +3,9 @@ import numpy as np
 from mathutils.math_utils import get_covariance_matrix
 
 
-### COMPUTING PCA
-def get_pca_matrix(features_matrix, m):
+def get_pca_matrix(samples, m):
 
-    covariance_m = get_covariance_matrix(features_matrix)
+    covariance_m = get_covariance_matrix(samples)
 
     # eig values are already sorted by svd
     s_eigh_vectors, s_values, vh = np.linalg.svd(covariance_m)

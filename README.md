@@ -15,11 +15,8 @@ Would be nice to have some sort of interactive journey...
 
 ### Dataset
 1) Specify path to load dataset
-2) Refactor Dataset into a class
 
 ### Various
-3) Refactor processing.py into submodules (pca, lda ..)
-4) Refactor reshape with vrow/vcol
 
 ### Analysis
 1) Complete the pca + lda part

@@ -1,9 +1,10 @@
 import matplotlib.pyplot as plt
+from mathutils.math_utils import *
 
 
 class Plotter:
-    def __init__(self) -> None:
-        self.num_features = 6
+    def __init__(self, dataset) -> None:
+        self.dataset = dataset
         self.features_idx = {
             0: "Feature 1",
             1: "Feature 2",
@@ -77,4 +78,29 @@ class Plotter:
                 % (f_idx + 1)
             )
         plt.legend()
+
+    def plot_all_1d_gau(self, genuines, counterfeits):
+        for f_idx in range(0, 6):
+            genuines_feature_samples = genuines[f_idx, :].reshape(1, genuines.shape[1])
+            counterfeits_feature_samples = counterfeits[f_idx, :].reshape(
+                1, counterfeits.shape[1]
+            )
+
+            g_plot, g_gaussian_pdf = get_gaussian_to_feature_plotline(
+                genuines_feature_samples, f_idx
+            )
+            c_plot, c_gaussian_pdf = get_gaussian_to_feature_plotline(
+                counterfeits_feature_samples, f_idx
+            )
+
+            self.plot_1d_gau(
+                c1_sample_set=genuines_feature_samples.ravel(),
+                c1_plot=g_plot,
+                c1_pdf=g_gaussian_pdf,
+                c2_sample_set=counterfeits_feature_samples.ravel(),
+                c2_plot=c_plot,
+                c2_pdf=c_gaussian_pdf,
+                f_idx=f_idx,
+                save=True,
+            )
         plt.show()
