@@ -10,15 +10,14 @@ Would be nice to have some sort of interactive journey...
 
 
 ### Prio
+- Complete MVG + PCA
 - Revise the mean of "peak" and "modes" in the preliminar analysis, since it's not clear what a peak is, it's not clear what "one peak shown" mean.
 - Revise the variances and means analysis 
 
 ### Dataset
 1) Specify path to load dataset
 
-### Various
 
 ### Analysis
-1) Complete the pca + lda part
-2) Complete gaussian fitting analysis
-3) Complete MVG analysis
+1) Complete and revise preliminary analysis
+2) Complete MVG model performance analysis

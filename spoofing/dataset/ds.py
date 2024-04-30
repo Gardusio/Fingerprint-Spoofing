@@ -3,25 +3,19 @@ import numpy as np
 
 class Dataset:
     def __init__(self, samples, labels):
+        self.num_classes = 2
         self.samples = samples
         self.labels = labels
-        self.num_classes = 2
         self.genuines = samples[:, labels == 1]
         self.counterfeits = samples[:, labels == 0]
+
         t_s, t_l, v_s, v_l = self.split_ds_2to1()
         self.training_samples = t_s
         self.training_labels = t_l
         self.validation_samples = v_s
         self.validation_labels = v_l
-
-    def genuines_mean(self):
-        return self.genuines.mean()
-
-    def counterfeits_mean(self):
-        return self.genuines.mean()
-
-    def ds_mean_vcol(self):
-        self.samples.mean(axis=1).reshape(self.samples.shape[0], 1)
+        self.training_genuines = self.get_genuines_from(t_s, t_l)
+        self.training_counterfeits = self.get_counterfeits_from(t_s, t_l)
 
     def get_genuines_from(self, samples, from_labels=None):
         if from_labels is not None:
@@ -46,3 +40,11 @@ class Dataset:
         LVAL = self.labels[idxTest]
 
         return DTR, LTR, DVAL, LVAL
+
+    def drop_features(self, to_drop=[]):
+        to_keep_mask = np.ones(self.training_samples.shape[0], dtype=bool)
+        to_keep_mask[to_drop] = False
+        self.training_samples = self.training_samples[to_keep_mask, :]
+        self.training_counterfeits = self.training_counterfeits[to_keep_mask, :]
+        self.training_genuines = self.training_genuines[to_keep_mask, :]
+        self.validation_samples = self.validation_samples[to_keep_mask, :]

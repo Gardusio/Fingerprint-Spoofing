@@ -7,7 +7,7 @@ def vrow(v):
 
 
 def vcol(v):
-    return v.reshape(1, v.shape[0])
+    return v.reshape(v.shape[0], 1)
 
 
 def get_mean_vector(samples):
@@ -55,11 +55,11 @@ def get_between_class_covariance_matrix(samples, labels, nc=[0, 1]):
     return Sb
 
 
-def log_gaussian_density_set(sample_set, ds_mean_vec, cov_matrix):
+def log_gaussian_density_set(samples, mean_vec, cov_matrix):
 
     ll = [
-        log_gaussian_density(sample_set[:, i : i + 1], ds_mean_vec, cov_matrix)
-        for i in range(sample_set.shape[1])
+        log_gaussian_density(samples[:, i : i + 1], mean_vec, cov_matrix)
+        for i in range(samples.shape[1])
     ]
 
     return np.array(ll)
@@ -100,3 +100,7 @@ def get_gaussian_to_feature_plotline(feature_samples, f_idx):
     gaussian_pdf = gaussian_density(vrow(plot), f_mean, f_cov)
 
     return plot, gaussian_pdf
+
+
+def get_pearson_correlation_matrix(cov_m):
+    return cov_m / (vcol(cov_m.diagonal() ** 0.5) * vrow(cov_m.diagonal() ** 0.5))

@@ -1,7 +1,5 @@
-from dataset.ds_utils import *
-from mathutils.math_utils import *
+from math_utils import *
 from scipy.linalg import eigh
-from validation.test_utils import *
 
 
 def get_lda_directions(Sb, Sw, m=2):

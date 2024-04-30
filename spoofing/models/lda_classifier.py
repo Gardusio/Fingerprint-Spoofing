@@ -72,7 +72,7 @@ class LDAClassifier:
     def get_error_rate(self, samples, t):
         n_samples = float(samples.shape[1])
         missed = self.get_accuracy(samples, t)
-        return missed / n_samples
+        return missed * 100 / n_samples
 
     def get_accuracy_as_pca_dims_function(
         self,
@@ -106,16 +106,14 @@ class LDAClassifier:
         return results
 
     def get_lda_mean_dist_treshold(self, samples, labels):
-        return 0.5 * (
-            self.ds.get_counterfeits_from(samples, labels).mean()
-            + self.ds.get_genuines_from(samples, labels).mean()
-        )
+        c_mean = self.ds.get_counterfeits_from(samples, labels).mean()
+        g_mean = self.ds.get_genuines_from(samples, labels).mean()
+        return 0.5 * (c_mean + g_mean)
 
     # Returns the lda matrix oriented in a way that genuines have greather projected mean
     def orient_lda_matrix(self, Ui, samples, labels):
-        if (
-            self.ds.get_genuines_from(samples, labels).mean()
-            < self.ds.get_counterfeits_from(samples, labels).mean()
-        ):
+        g_mean = self.ds.get_genuines_from(samples, labels).mean()
+        c_mean = self.ds.get_counterfeits_from(samples, labels).mean()
+        if g_mean < c_mean:
             return -Ui
         return Ui

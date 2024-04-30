@@ -1,10 +1,10 @@
+import matplotlib
 import matplotlib.pyplot as plt
-from mathutils.math_utils import *
+from math_utils import *
 
 
 class Plotter:
-    def __init__(self, dataset) -> None:
-        self.dataset = dataset
+    def __init__(self) -> None:
         self.features_idx = {
             0: "Feature 1",
             1: "Feature 2",
@@ -104,3 +104,15 @@ class Plotter:
                 save=True,
             )
         plt.show()
+
+    def plot_corr_matrix(self, corr_matrix, title):
+        plt.imshow(corr_matrix, cmap="viridis", interpolation="nearest")
+        plt.colorbar()
+        plt.title(title)
+        plt.xlabel("Features")
+        plt.ylabel("Features")
+        plt.show()
+
+    def plot_correlation_matrixes(self, g_corr_matrix, c_corr_matrix):
+        plt.plot_corr_matrix(g_corr_matrix, "Correlation matrix for genuines")
+        plt.plot_corr_matrix(c_corr_matrix, "Correlation matrix for counterfeits")
