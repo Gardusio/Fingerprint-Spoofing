@@ -1,6 +1,8 @@
-from loader import DatasetLoader
+from dataset.loader import DatasetLoader
 from plotter import Plotter
-from processing import *
+from dataset.ds_utils import *
+from preprocessing.pca import *
+from preprocessing.lda import *
 
 
 def main():
@@ -12,40 +14,40 @@ def main():
 
     plt = Plotter()
 
-    ############################################## LAB 2 ##########################################
-    """
-    # select all rows (:), match column_idx with mask_idx
     # Q2: if ds is big, how to do this in a single pass while leveraging np?
     genuines = get_genuines_samples(samples, labels)
     counterfeits = get_counterfeits_samples(samples, labels)
 
-    plt.plot_hist(genuines, counterfeits, x_label="Feature")
-    plt.plot_scatters(genuines, counterfeits)
+    """
+    ############################################## LAB 2 ##########################################
 
+    plt.plot_features(genuines, counterfeits)
+    plt.plot_scatters(genuines, counterfeits)
     """
 
+    """
     ############################################## LAB 3 ##########################################
     ############################################## LAB 3 - PCA ####################################
-    """
+
     pcad = pca(samples, 6)
     pcad_genuines = get_genuines_samples(pcad, labels)
     pcad_counterfeits = get_counterfeits_samples(pcad, labels)
-    plt.plot_hist(pcad_genuines, pcad_counterfeits, x_label="Component")
-    """
+    plt.plot_features(pcad_genuines, pcad_counterfeits, x_label="Component")
+
     ############################################## LAB 3 - LDA #####################################
-    """
+
     U_lda = -get_lda_matrix(samples, labels)
     LDA_samples = U_lda.T @ samples
 
-    plt.plot_hist(
+    plt.plot_features(
         get_genuines_samples(LDA_samples, labels),
         get_counterfeits_samples(LDA_samples, labels),
         x_label="LDA direction",
         range_v=1,
     )
-    """
+
     ############################################## LAB 3 - LDA classification ######################
-    """
+
     training_samples, training_labels, validation_samples, validation_labels = (
         loader.split_ds_2to1(samples, labels)
     )
@@ -98,9 +100,6 @@ def main():
 
     ############################################## LAB 4 - Fitting Gaussians #######################
 
-    genuines = get_genuines_samples(samples, labels)
-    counterfeits = get_counterfeits_samples(samples, labels)
-
     for f_idx in range(0, 6):
         genuines_feature_samples = genuines[f_idx, :].reshape(1, genuines.shape[1])
         counterfeits_feature_samples = counterfeits[f_idx, :].reshape(
@@ -124,6 +123,8 @@ def main():
             f_idx=f_idx,
             save=True,
         )
+
+    ############################################## LAB 5 - MVG, NB-MVG, Tied MVG #######################
 
 
 if __name__ == "__main__":
