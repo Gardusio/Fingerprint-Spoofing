@@ -10,17 +10,15 @@ def main():
     # TODO: specify ds file path via args
     loader = DatasetLoader()
     ds = loader.load()
-    samples, labels = ds
+    samples = ds.samples
+    labels = ds.labels
+    genuines = ds.genuines
+    counterfeits = ds.counterfeits
 
     plt = Plotter()
 
-    # Q2: if ds is big, how to do this in a single pass while leveraging np?
-    genuines = get_genuines_samples(samples, labels)
-    counterfeits = get_counterfeits_samples(samples, labels)
-
     """
     ############################################## LAB 2 ##########################################
-
     plt.plot_features(genuines, counterfeits)
     plt.plot_scatters(genuines, counterfeits)
     """
@@ -30,8 +28,8 @@ def main():
     ############################################## LAB 3 - PCA ####################################
 
     pcad = pca(samples, 6)
-    pcad_genuines = get_genuines_samples(pcad, labels)
-    pcad_counterfeits = get_counterfeits_samples(pcad, labels)
+    pcad_genuines = ds.get_genuines_from(pcad)
+    pcad_counterfeits = ds.get_counterfeits_from(pcad, labels)
     plt.plot_features(pcad_genuines, pcad_counterfeits, x_label="Component")
 
     ############################################## LAB 3 - LDA #####################################
@@ -40,23 +38,23 @@ def main():
     LDA_samples = U_lda.T @ samples
 
     plt.plot_features(
-        get_genuines_samples(LDA_samples, labels),
-        get_counterfeits_samples(LDA_samples, labels),
+        ds.get_genuines_from(LDA_samples),
+        ds.get_counterfeits_from(LDA_samples),
         x_label="LDA direction",
         range_v=1,
     )
-
+   
     ############################################## LAB 3 - LDA classification ######################
 
     training_samples, training_labels, validation_samples, validation_labels = (
-        loader.split_ds_2to1(samples, labels)
+        ds.split_ds_2to1()
     )
 
     Ut_lda = get_lda_matrix(training_samples, training_labels)
     training_samples_lda = Ut_lda.T @ training_samples
     plt.plot_features(
-        get_genuines_samples(training_samples_lda, training_labels),
-        get_counterfeits_samples(training_samples_lda, training_labels),
+        ds.get_genuines_from(training_samples_lda, training_labels),
+        ds.get_counterfeits_from(training_samples_lda, training_labels),
         x_label="LDA direction",
         range_v=1,
     )
@@ -96,7 +94,6 @@ def main():
 
     for m, t, error_rate in results:
         print(f"Error rate with {m} pca dimensions and threshold {t} is: ", error_rate)
-    """
 
     ############################################## LAB 4 - Fitting Gaussians #######################
 
@@ -123,6 +120,7 @@ def main():
             f_idx=f_idx,
             save=True,
         )
+    """
 
     ############################################## LAB 5 - MVG, NB-MVG, Tied MVG #######################
 

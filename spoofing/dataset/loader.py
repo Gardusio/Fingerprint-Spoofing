@@ -1,4 +1,5 @@
 import numpy as np
+from dataset.ds import Dataset
 
 
 class DatasetLoader:
@@ -25,21 +26,8 @@ class DatasetLoader:
         raw_features, raw_labels = zip(*raw_samples_w_label)
 
         # row: feature, column: sample
-        features_matrix = np.column_stack(raw_features)
+        samples = np.column_stack(raw_features)
 
         labels = np.array(raw_labels)
 
-        return (features_matrix, labels)
-
-    def split_ds_2to1(self, D, L, seed=0):
-        nTrain = int(D.shape[1] * 2.0 / 3.0)
-        np.random.seed(seed)
-        idx = np.random.permutation(D.shape[1])
-        idxTrain = idx[0:nTrain]
-        idxTest = idx[nTrain:]
-        DTR = D[:, idxTrain]
-        DVAL = D[:, idxTest]
-        LTR = L[idxTrain]
-        LVAL = L[idxTest]
-
-        return DTR, LTR, DVAL, LVAL
+        return Dataset(samples, labels)

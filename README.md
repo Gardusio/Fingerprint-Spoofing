@@ -11,6 +11,7 @@ Would be nice to have some sort of interactive journey...
 
 ### Prio
 - Revise the mean of "peak" and "modes" in the preliminar analysis, since it's not clear what a peak is, it's not clear what "one peak shown" mean.
+- Revise the variances and means analysis 
 
 ### Dataset
 1) Specify path to load dataset
@@ -23,3 +24,4 @@ Would be nice to have some sort of interactive journey...
 ### Analysis
 1) Complete the pca + lda part
 2) Complete gaussian fitting analysis
+3) Complete MVG analysis
