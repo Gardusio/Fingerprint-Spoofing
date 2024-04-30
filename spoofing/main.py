@@ -80,6 +80,61 @@ def main():
     """
 
 
+"""
+def function_one(plt, ds):
+    plt.plot_features(ds.genuines, ds.counterfeits)
+    print("Nice informing analysis about this plots")
+    print("Do you want to procede with scatters? (Y/N)")
+    choice = input("Enter your choice: ")
+
+    if choice == "Y":
+        plt.plot_scatters(ds.genuines, ds.counterfeits)
+    
+    return 
+
+def function_two():
+    print("Function Two was triggered.")
+
+def function_three():
+    print("Function Three was triggered.")
+
+def display_menu():
+    print("Welcome to this Fingerprint spoofing journey!")
+    print("Choose what to do with this spoofing dataset:")
+    print("1. Show preliminary plots")
+    print("2. Apply PCA to the dataset")
+    print("3. Apply LDA to the dataset")
+    print("0. Exit")
+
+def main():
+    loader = DatasetLoader()
+    ds = loader.load()
+
+    samples = ds.samples
+    labels = ds.labels
+
+    genuines = ds.genuines
+    counterfeits = ds.counterfeits
+
+    plt = Plotter()
+
+    while True:
+        display_menu()
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            function_one(plt, ds)
+        elif choice == "2":
+            function_two()
+        elif choice == "3":
+            function_three()
+        elif choice == "0":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+"""
+
 
 if __name__ == "__main__":
     main()

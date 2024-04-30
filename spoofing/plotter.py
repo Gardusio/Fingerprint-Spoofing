@@ -46,7 +46,8 @@ class Plotter:
         plt.scatter(x=genuines[i], y=genuines[j], label="Genuines")
         plt.scatter(x=counterfeits[i], y=counterfeits[j], label="Counterfeits")
         plt.legend()
-        plt.savefig(f"./analysis/plots/scatter_plots/scatter_{i}-{j}_hist.pdf")
+        if save:
+            plt.savefig(f"./analysis/plots/scatter_plots/scatter_{i}-{j}_hist.pdf")
 
     def plot_scatters(self, genuines, counterfeits):
         self.plot_scatter(genuines, counterfeits, 0, 1)
