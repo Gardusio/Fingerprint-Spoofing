@@ -18,6 +18,9 @@ Would be nice to have some sort of interactive journey...
 1) Specify path to load dataset
 
 
+### Varie
+1) Add docs
+
 ### Analysis
 1) Complete and revise preliminary analysis
 2) Complete MVG model performance analysis

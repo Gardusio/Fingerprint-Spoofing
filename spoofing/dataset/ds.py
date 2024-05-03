@@ -1,4 +1,5 @@
 import numpy as np
+from preprocessing.pca import pca
 
 
 class Dataset:
@@ -48,3 +49,15 @@ class Dataset:
         self.training_counterfeits = self.training_counterfeits[to_keep_mask, :]
         self.training_genuines = self.training_genuines[to_keep_mask, :]
         self.validation_samples = self.validation_samples[to_keep_mask, :]
+
+    def apply_pca(self, m):
+        self.samples = pca(self.samples, m)
+        self.genuines = self.get_genuines_from(self.samples)
+        self.counterfeits = self.get_counterfeits_from(self.samples)
+        t_s, t_l, v_s, v_l = self.split_ds_2to1()
+        self.training_samples = t_s
+        self.training_labels = t_l
+        self.validation_samples = v_s
+        self.validation_labels = v_l
+        self.training_genuines = self.get_genuines_from(t_s, t_l)
+        self.training_counterfeits = self.get_counterfeits_from(t_s, t_l)

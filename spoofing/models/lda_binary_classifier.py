@@ -3,14 +3,21 @@ from preprocessing import lda
 from preprocessing.pca import get_pca_matrix
 
 
-class LDAClassifier:
-    def __init__(self, dataset) -> None:
-        self.ds = dataset
+class LDABinaryClassifier:
+    def __init__(
+        self, t_samples, t_labels, v_samples, v_labels, c1_label, c2_label
+    ) -> None:
+        self.training_samples = t_samples
+        self.training_labels = t_labels
+        self.validation_samples = v_samples
+        self.validation_labels = v_labels
+        self.c1_label = c1_label
+        self.c2_label = c2_label
 
     def classify_with_mean_dist_treshold(self, with_pca=False):
-        training_samples = self.ds.training_samples
-        training_labels = self.ds.training_labels
-        validation_samples = self.ds.validation_samples
+        training_samples = self.training_samples
+        training_labels = self.training_labels
+        validation_samples = self.validation_samples
 
         Ut_lda = lda.get_lda_matrix(training_samples, training_labels)
         validation_samples_lda = Ut_lda.T @ validation_samples
@@ -41,8 +48,8 @@ class LDAClassifier:
                 )
 
     def classify_with_best_threshold(self):
-        Ut_lda = lda.get_lda_matrix(self.ds.training_samples, self.ds.training_labels)
-        validation_samples_lda = Ut_lda.T @ self.ds.validation_samples
+        Ut_lda = lda.get_lda_matrix(self.training_samples, self.training_labels)
+        validation_samples_lda = Ut_lda.T @ self.validation_samples
         # We get the range by observing the training LDA histogram
         # The hope is within this range there's a better treshold than the projected mean diff
         error_rate, best_threshold = self.get_best_threshold(
@@ -63,10 +70,11 @@ class LDAClassifier:
         return min(rates, key=lambda t: t[0])
 
     def get_accuracy(self, samples, threshold):
-        PVAL = np.zeros(shape=self.ds.validation_labels.shape, dtype=np.int32)
+        v_labels = self.validation_labels
+        PVAL = np.zeros(shape=v_labels.shape, dtype=np.int32)
         PVAL[samples[0] >= threshold] = 1
         PVAL[samples[0] < threshold] = 0
-        missed = np.sum(PVAL != self.ds.validation_labels)
+        missed = np.sum(PVAL != v_labels)
         return missed
 
     def get_error_rate(self, samples, t):
@@ -106,14 +114,20 @@ class LDAClassifier:
         return results
 
     def get_lda_mean_dist_treshold(self, samples, labels):
-        c_mean = self.ds.get_counterfeits_from(samples, labels).mean()
-        g_mean = self.ds.get_genuines_from(samples, labels).mean()
-        return 0.5 * (c_mean + g_mean)
+        c1_mean, c2_mean = self.get_means(samples, labels)
+        return 0.5 * (c2_mean + c1_mean)
 
     # Returns the lda matrix oriented in a way that genuines have greather projected mean
     def orient_lda_matrix(self, Ui, samples, labels):
-        g_mean = self.ds.get_genuines_from(samples, labels).mean()
-        c_mean = self.ds.get_counterfeits_from(samples, labels).mean()
-        if g_mean < c_mean:
+        c1_mean, c2_mean = self.get_means(samples, labels)
+        if c1_mean < c2_mean:
             return -Ui
         return Ui
+
+    def get_class_mean(self, samples, labels, c_label):
+        return samples[:, labels == c_label].mean()
+
+    def get_means(self, samples, labels):
+        c1_mean = self.get_class_mean(samples, labels, self.c1_label)
+        c2_mean = self.get_class_mean(samples, labels, self.c2_label)
+        return c1_mean, c2_mean

@@ -2,7 +2,9 @@ from dataset.loader import DatasetLoader
 from plotter import Plotter
 from preprocessing.pca import *
 from preprocessing.lda import *
-from models.lda_classifier import LDAClassifier
+from models.lda_binary_classifier import LDABinaryClassifier
+
+# from models.mvg_classifier import MVGClassifier
 from models.mvg_classifier import MVGClassifier
 
 
@@ -20,12 +22,12 @@ def main():
 
     plt = Plotter()
 
-    # """PRELIMINARY PLOTS
-    # plt.plot_features_onefig(genuines, counterfeits, x_label="Feature", save=True, name="features_hists")
-    # plt.plot_scatters(genuines, counterfeits)
-    # """
+    """PRELIMINARY PLOTS
+    plt.plot_features_onefig(genuines, counterfeits, x_label="Feature", save=True, name="features_hists")
+    plt.plot_scatters(genuines, counterfeits)
+    """
 
-    # """PCA
+    """PCA
     pcad = pca(samples, 6)
     pcad_genuines = ds.get_genuines_from(pcad)
     pcad_counterfeits = ds.get_counterfeits_from(pcad)
@@ -35,7 +37,7 @@ def main():
         x_label="Component",
         name="principal_components",
     )
-    # """
+    """
 
     """LDA
     U_lda = -get_lda_matrix(samples, labels)
@@ -50,19 +52,32 @@ def main():
     """
 
     """LDA CLASSIFIER
-    # lda_classifier = LDAClassifier(ds)
-    # lda_classifier.classify_with_mean_dist_treshold()
-    # lda_classifier.classify_with_mean_dist_treshold(with_pca=True)
-    # lda_classifier.classify_with_best_threshold()
+    lda_classifier = LDABinaryClassifier(
+        t_samples=ds.training_samples,
+        t_labels=ds.training_labels,
+        v_samples=ds.validation_samples,
+        v_labels=ds.validation_labels,
+        c1_label=1,
+        c2_label=0,
+    )
+    lda_classifier.classify_with_mean_dist_treshold()
+    lda_classifier.classify_with_mean_dist_treshold(with_pca=True)
+    lda_classifier.classify_with_best_threshold()
     """
 
     """PLOT GAUSSIANS TO FEATURES
     # plt.plot_all_1d_gau(genuines, counterfeits)
     """
-    plt.plot_all_1d_gau(genuines, counterfeits)
 
     """MVG CLASSIFIER
-    mvg_classifier = MVGClassifier(ds)
+    mvg_classifier = MVGClassifier(
+        t_samples=ds.training_samples,
+        t_labels=ds.training_labels,
+        v_samples=ds.validation_samples,
+        v_labels=ds.validation_labels,
+        c1_label=1,
+        c2_label=0,
+    )
     mvg_classifier.classify()
     mvg_classifier.classify(with_naive_bayes=True)
     mvg_classifier.classify(with_tied=True)
@@ -76,15 +91,22 @@ def main():
     #ds.drop_features([4, 5])
     #ds.drop_features([2, 3, 4, 5])
     print("FEATURE SELECTED")
-    fs_mvg_classifier = MVGClassifier(ds)
+    fs_mvg_classifier = MVGClassifier(
+        t_samples=ds.training_samples,
+        t_labels=ds.training_labels,
+        v_samples=ds.validation_samples,
+        v_labels=ds.validation_labels,
+        c1_label=1,
+        c2_label=0,
+    )
     fs_mvg_classifier.classify()
     fs_mvg_classifier.classify(with_naive_bayes=True)
     fs_mvg_classifier.classify(with_tied=True)
     """
 
-    """MVG WITH PCA
+    # """MVG WITH PCA
 
-    """
+    # """
 
 
 """
