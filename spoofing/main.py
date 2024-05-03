@@ -20,17 +20,22 @@ def main():
 
     plt = Plotter()
 
-    """PRELIMINARY PLOTS
-    plt.plot_features(genuines, counterfeits)
-    plt.plot_scatters(genuines, counterfeits)
-    """
+    # """PRELIMINARY PLOTS
+    # plt.plot_features_onefig(genuines, counterfeits, x_label="Feature", save=True, name="features_hists")
+    # plt.plot_scatters(genuines, counterfeits)
+    # """
 
-    """PCA
+    # """PCA
     pcad = pca(samples, 6)
     pcad_genuines = ds.get_genuines_from(pcad)
     pcad_counterfeits = ds.get_counterfeits_from(pcad)
-    plt.plot_features(pcad_genuines, pcad_counterfeits, x_label="Component")
-    """
+    plt.plot_features_onefig(
+        pcad_genuines,
+        pcad_counterfeits,
+        x_label="Component",
+        name="principal_components",
+    )
+    # """
 
     """LDA
     U_lda = -get_lda_matrix(samples, labels)
@@ -54,8 +59,9 @@ def main():
     """PLOT GAUSSIANS TO FEATURES
     # plt.plot_all_1d_gau(genuines, counterfeits)
     """
+    plt.plot_all_1d_gau(genuines, counterfeits)
 
-    # """MVG CLASSIFIER
+    """MVG CLASSIFIER
     mvg_classifier = MVGClassifier(ds)
     mvg_classifier.classify()
     mvg_classifier.classify(with_naive_bayes=True)
@@ -64,7 +70,7 @@ def main():
     # g_corr_matrix = get_pearson_matrix(mvg_classifier.parameters["g_mle"][1])
     # c_corr_matrix = get_pearson_matrix(mvg_classifier.parameters["c_mle"][1])
     # plt.plot_correlation_matrixes(g_corr_matrix, c_corr_matrix)
-    # """
+    """
 
     """FEATURE SELECTION (dropping features)
     #ds.drop_features([4, 5])
@@ -77,6 +83,7 @@ def main():
     """
 
     """MVG WITH PCA
+
     """
 
 

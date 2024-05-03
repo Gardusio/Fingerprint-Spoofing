@@ -14,19 +14,47 @@ class Plotter:
             5: "Feature 6",
         }
 
+    def plot_features_onefig(
+        self, genuines, counterfeits, save=False, range_v=6, x_label="", name=""
+    ):
+        fig, axs = plt.subplots(2, range_v // 2, figsize=(20, 8))
+        for row in range(2):
+            for col in range(range_v // 2):
+                f_idx = row * (range_v // 2) + col
+                axs[row, col].set_xlabel(x_label + f" {f_idx}")
+                self.plot_hist_x(
+                    axs[row, col], genuines[f_idx], bins=100, alpha=0.4, label="Genuine"
+                )
+                self.plot_hist_x(
+                    axs[row, col],
+                    counterfeits[f_idx],
+                    bins=100,
+                    alpha=0.4,
+                    label="Counterfeit",
+                )
+                axs[row, col].legend()
+        plt.tight_layout()
+        if save:
+            plt.savefig(f"./analysis/plots/features_hists/{name}.pdf")
+        plt.show()
+
+    def plot_hist_x(self, ax, data, **kwargs):
+        ax.hist(data, **kwargs)
+
     def plot_hist(self, samples, bins, alpha, label):
         plt.hist(samples, bins=bins, alpha=alpha, label=label)
 
     def plot_features(
         self, genuines, counterfeits, save=False, range_v=6, x_label="", name=""
     ):
-        for dIdx in range(0, range_v):
+        for f_idx in range(0, range_v):
             plt.figure()
-            plt.xlabel(x_label + f" {dIdx}")
-            self.plot_hist(genuines[dIdx], bins=100, alpha=0.4, label="Genuine")
+            plt.xlabel(x_label + f" {f_idx}")
+
+            self.plot_hist(genuines[f_idx], bins=100, alpha=0.4, label="Genuine")
 
             self.plot_hist(
-                counterfeits[dIdx],
+                counterfeits[f_idx],
                 bins=100,
                 alpha=0.4,
                 label="Counterfeit",
@@ -35,7 +63,7 @@ class Plotter:
             plt.tight_layout()
             if save:
                 plt.savefig(
-                    f"./analysis/plots/features_hists/{name}_%d_hist.pdf" % (dIdx + 1)
+                    f"./analysis/plots/features_hists/{name}_%d_hist.pdf" % (f_idx + 1)
                 )
         plt.show()
 
