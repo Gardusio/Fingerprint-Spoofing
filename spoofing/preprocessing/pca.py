@@ -16,6 +16,12 @@ def get_pca_matrix(samples, m):
     return P
 
 
-def pca(samples, m):
-    P = get_pca_matrix(samples, m)
+def pca(samples, P):
     return P.T @ samples
+
+
+def pca_fit(x_train, x_val, m):
+    P = get_pca_matrix(x_train, m)
+    pcad_x_train = P.T @ x_train
+    pcad_x_val = P.T @ x_val
+    return pcad_x_train, pcad_x_val

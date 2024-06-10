@@ -145,3 +145,10 @@ class Plotter:
     def plot_correlation_matrixes(self, g_corr_matrix, c_corr_matrix):
         plt.plot_corr_matrix(g_corr_matrix, "Correlation matrix for genuines")
         plt.plot_corr_matrix(c_corr_matrix, "Correlation matrix for counterfeits")
+
+    def plot_bayes_errors(self, prior_log_odds, dcf, mindcf, range):
+        plt.plot(prior_log_odds, dcf, label="DCF", color="r")
+        plt.plot(prior_log_odds, mindcf, label="min DCF", color="b")
+        plt.ylim([0, 1.1])
+        plt.xlim([range[0], range[1]])
+        plt.show()

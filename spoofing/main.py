@@ -1,27 +1,31 @@
+import sys
+import pprint
 from dataset.loader import DatasetLoader
 from plotter import Plotter
 from preprocessing.pca import *
 from preprocessing.lda import *
-from models.lda_binary_classifier import LDABinaryClassifier
 
-# from models.mvg_classifier import MVGClassifier
-from models.mvg_classifier import MVGClassifier
+from models.lda_binary_classifier import LDABinaryClassifier
+from models.mvg_binary_classifiers import MVGClassifier, NBClassifier, TIEDClassifier
+from evaluation.application import Application
+from evaluation.mvgs_evaluator import MVGEvaluator
+
+from evaluation.models_evaluation import print_mvg_pca_evaluation
 
 
 def main():
 
     # TODO: specify ds file path via args
-    loader = DatasetLoader()
-    ds = loader.load()
+    file_path = sys.argv[1] if len(sys.argv) == 2 else "./dataset/trainData.txt"
+    loader = DatasetLoader(file_path=file_path)
 
+    ds = loader.load()
     samples = ds.samples
     labels = ds.labels
-
     genuines = ds.genuines
     counterfeits = ds.counterfeits
 
     plt = Plotter()
-
     """PRELIMINARY PLOTS
     plt.plot_features_onefig(genuines, counterfeits, x_label="Feature", save=True, name="features_hists")
     plt.plot_scatters(genuines, counterfeits)
@@ -51,68 +55,125 @@ def main():
     )
     """
 
-    """LDA CLASSIFIER
+    """LDA CLASSIFIER TODO: REFACTOR THIS with "fit"
     lda_classifier = LDABinaryClassifier(
-        t_samples=ds.training_samples,
-        t_labels=ds.training_labels,
-        v_samples=ds.validation_samples,
-        v_labels=ds.validation_labels,
+        t_samples=x_train,
+        t_labels=y_train,
+        v_samples=x_val,
+        v_labels=y_val,
         c1_label=1,
         c2_label=0,
     )
     lda_classifier.classify_with_mean_dist_treshold()
-    lda_classifier.classify_with_mean_dist_treshold(with_pca=True)
     lda_classifier.classify_with_best_threshold()
+    lda_classifier.classify_with_mean_dist_treshold(with_pca=True)
     """
 
     """PLOT GAUSSIANS TO FEATURES
     # plt.plot_all_1d_gau(genuines, counterfeits)
     """
 
-    """MVG CLASSIFIER
-    mvg_classifier = MVGClassifier(
-        t_samples=ds.training_samples,
-        t_labels=ds.training_labels,
-        v_samples=ds.validation_samples,
-        v_labels=ds.validation_labels,
-        c1_label=1,
-        c2_label=0,
-    )
-    mvg_classifier.classify()
-    mvg_classifier.classify(with_naive_bayes=True)
-    mvg_classifier.classify(with_tied=True)
+    x_train, y_train, x_val, y_val = ds.split_ds_2to1()
+    mvg_classifier = MVGClassifier(c1_label=1, c2_label=0, name="MVG")
+    nb_classifier = NBClassifier(c1_label=1, c2_label=0, name="Naive bayes")
+    tied_classifier = TIEDClassifier(c1_label=1, c2_label=0, name="Tied MVG")
 
+    """MVG CLASSIFICATION WITH NB AND TIED
+    print("-" * 80)
+    print("\n MVG CLASSIFICATION WITH NB AND TIED MODELS\n")
+    mvg_classifier.fit(x_train, y_train)
+    nb_classifier.fit(x_train, y_train)
+    tied_classifier.fit(x_train, y_train)
+
+    mvg_classifier.classify(x_val, y_val, verbose=True)
+    nb_classifier.classify(x_val, y_val, verbose=True)
+    tied_classifier.classify(x_val, y_val, verbose=True)
+
+    # TODO: WHAT'S THIS
     # g_corr_matrix = get_pearson_matrix(mvg_classifier.parameters["g_mle"][1])
     # c_corr_matrix = get_pearson_matrix(mvg_classifier.parameters["c_mle"][1])
     # plt.plot_correlation_matrixes(g_corr_matrix, c_corr_matrix)
     """
 
-    """FEATURE SELECTION (dropping features)
-    #ds.drop_features([4, 5])
-    #ds.drop_features([2, 3, 4, 5])
-    print("FEATURE SELECTED")
-    fs_mvg_classifier = MVGClassifier(
-        t_samples=ds.training_samples,
-        t_labels=ds.training_labels,
-        v_samples=ds.validation_samples,
-        v_labels=ds.validation_labels,
-        c1_label=1,
-        c2_label=0,
-    )
-    fs_mvg_classifier.classify()
-    fs_mvg_classifier.classify(with_naive_bayes=True)
-    fs_mvg_classifier.classify(with_tied=True)
+    """FEATURE SELECTION (dropping features) TODO: Refactor this
+    x_train_dropped, x_val_dropped = ds.drop_features([4, 5])
+    # x_train_dropped, x_val_dropped = ds.drop_features([2, 3, 4, 5])
+    print("-" * 80)
+    print("\nFEATURE SELECTED\n")
+    mvg_classifier.fit(x_train_dropped, y_train)
+    nb_classifier.fit(x_train_dropped, y_train)
+    tied_classifier.fit(x_train_dropped, y_train)
+    mvg_classifier.classify(x_val_dropped, y_val, verbose=True)
+    nb_classifier.classify(x_val_dropped, y_val, verbose=True)
+    tied_classifier.classify(x_val_dropped, y_val, verbose=True)
     """
 
-    # """MVG WITH PCA
+    """MVG WITH PCA
+    print("-" * 80)
+    print("APPLYING PCA ON THE MVG AND ITS VARIANTS")
+    for m in [1, 2, 3, 4, 5, 6]:
+        pcad_x_train, pcad_x_val = pca_fit(x_train, x_val, m)
+        print("\nMVG Classification after PCA with M =", m)
+        mvg_classifier.fit(pcad_x_train, y_train)
+        nb_classifier.fit(pcad_x_train, y_train)
+        tied_classifier.fit(pcad_x_train, y_train)
 
+        mvg_classifier.classify(pcad_x_val, y_val, verbose=True)
+        nb_classifier.classify(pcad_x_val, y_val, verbose=True)
+        tied_classifier.classify(pcad_x_val, y_val, verbose=True)
+    """
+
+    # """ MVG BAYES EVALUATION
+    print("-" * 80)
+    print("MVG BAYES EVALUATION ")
+    print("\nEvaluating MVG with and without PCA...")
+    evaluator = MVGEvaluator()
+
+    # uniform_app = Application(0.5, 1.0, 1.0, "Uniform")
+    # higher_gen_app = Application(0.9, 1.0, 1.0, "Higher genuine prior")
+    higher_fake_app = Application(0.1, 1.0, 1.0, "Higher counterfeits prior")
+    # applications = [uniform, higher_fake_app, higher_gen_app]
+    applications = [higher_fake_app]
+
+    print_mvg_pca_evaluation(
+        model="MVG",
+        applications=applications,
+        x_train=x_train,
+        y_train=y_train,
+        x_val=x_val,
+        y_val=y_val,
+    )
+
+    print_mvg_pca_evaluation(
+        model="NB",
+        applications=applications,
+        x_train=x_train,
+        y_train=y_train,
+        x_val=x_val,
+        y_val=y_val,
+    )
+
+    print_mvg_pca_evaluation(
+        model="TIED",
+        applications=applications,
+        x_train=x_train,
+        y_train=y_train,
+        x_val=x_val,
+        y_val=y_val,
+    )
+
+    # prior_log_odds = np.linspace(-4, 4, 21)
+    # mindcf = evaluator.get_log_odds_min_dcf(prior_log_odds)
+    # plt.plot_bayes_errors(dcf, prior_log_odds, mindcf, (-1, 1))
     # """
 
 
+if __name__ == "__main__":
+    main()
 """
 def function_one(plt, ds):
     plt.plot_features(ds.genuines, ds.counterfeits)
-    print("Nice informing analysis about this plots")
+    print("Nice informing analysis about this plots OR BETTER")
     print("Do you want to procede with scatters? (Y/N)")
     choice = input("Enter your choice: ")
 
@@ -121,18 +182,14 @@ def function_one(plt, ds):
     
     return 
 
-def function_two():
-    print("Function Two was triggered.")
-
-def function_three():
-    print("Function Three was triggered.")
-
 def display_menu():
     print("Welcome to this Fingerprint spoofing journey!")
     print("Choose what to do with this spoofing dataset:")
     print("1. Show preliminary plots")
     print("2. Apply PCA to the dataset")
     print("3. Apply LDA to the dataset")
+    print("4. Apply an LDA classifier")
+    print("5. Apply a MVG classifier")
     print("0. Exit")
 
 def main():
@@ -163,7 +220,3 @@ def main():
         else:
             print("Invalid choice. Please try again.")
 """
-
-
-if __name__ == "__main__":
-    main()

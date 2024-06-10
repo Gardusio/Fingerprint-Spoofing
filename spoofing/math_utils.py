@@ -69,6 +69,7 @@ def log_gaussian_density(sample, ds_mean_vec, cov_matrix):
     n_features = ds_mean_vec.shape[0]
     _, cov_matrix_log_det = np.linalg.slogdet(cov_matrix)
     inverse_cov_matrix = np.linalg.inv(cov_matrix)
+
     centered_sample = sample - ds_mean_vec
 
     log_2pi = math.log(2 * math.pi)
@@ -104,3 +105,10 @@ def get_gaussian_to_feature_plotline(feature_samples, f_idx):
 
 def get_pearson_correlation_matrix(cov_m):
     return cov_m / (vcol(cov_m.diagonal() ** 0.5) * vrow(cov_m.diagonal() ** 0.5))
+
+
+def get_confusion_matrix(predictions, labels, num_classes):
+    confusion_matrix = np.zeros(shape=(num_classes, num_classes))
+    for p, l in zip(predictions, labels):
+        confusion_matrix[p, l] += 1
+    return confusion_matrix
