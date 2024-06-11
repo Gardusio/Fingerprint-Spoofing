@@ -1,6 +1,6 @@
 import numpy as np
 
-from math_utils import get_covariance_matrix
+from util.math_utils import get_covariance_matrix
 
 
 def get_pca_matrix(samples, m):
@@ -16,7 +16,8 @@ def get_pca_matrix(samples, m):
     return P
 
 
-def pca(samples, P):
+def pca(samples, m):
+    P = get_pca_matrix(samples, m)
     return P.T @ samples
 
 

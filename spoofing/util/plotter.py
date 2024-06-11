@@ -1,6 +1,5 @@
-import matplotlib
 import matplotlib.pyplot as plt
-from math_utils import *
+from util.math_utils import *
 
 
 class Plotter:
@@ -108,7 +107,7 @@ class Plotter:
             )
         plt.legend()
 
-    def plot_all_1d_gau(self, genuines, counterfeits):
+    def plot_all_1d_gau(self, genuines, counterfeits, save_plots=False):
         for f_idx in range(0, 6):
             genuines_feature_samples = genuines[f_idx, :].reshape(1, genuines.shape[1])
             counterfeits_feature_samples = counterfeits[f_idx, :].reshape(
@@ -130,7 +129,7 @@ class Plotter:
                 c2_plot=c_plot,
                 c2_pdf=c_gaussian_pdf,
                 f_idx=f_idx,
-                save=True,
+                save=save_plots,
             )
         plt.show()
 
@@ -146,9 +145,12 @@ class Plotter:
         plt.plot_corr_matrix(g_corr_matrix, "Correlation matrix for genuines")
         plt.plot_corr_matrix(c_corr_matrix, "Correlation matrix for counterfeits")
 
-    def plot_bayes_errors(self, prior_log_odds, dcf, mindcf, range):
-        plt.plot(prior_log_odds, dcf, label="DCF", color="r")
-        plt.plot(prior_log_odds, mindcf, label="min DCF", color="b")
-        plt.ylim([0, 1.1])
-        plt.xlim([range[0], range[1]])
+    def plot_bayes_errors(self, prior_log_odds, actdcfs, mindcfs, title):
+        plt.plot(prior_log_odds, actdcfs, label="act DCF eps 0.001", color="r")
+        plt.plot(prior_log_odds, mindcfs, label="min DCF eps 0.001", color="b")
+        plt.ylim([0.1, 1.1])
+        plt.title(title)
+        plt.xlabel("Prior Log Odds")
+        plt.ylabel("Detection Cost Function (DCF)")
+        plt.legend()
         plt.show()

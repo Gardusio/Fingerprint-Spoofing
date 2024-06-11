@@ -1,10 +1,16 @@
 import numpy as np
-from math_utils import get_confusion_matrix
+from util.math_utils import get_confusion_matrix
 
 
 class BinaryBayesEvaluator:
     def __init__(
-        self, evaluation_labels, opt_predictions, llrs, application, model_name, verbose
+        self,
+        evaluation_labels,
+        opt_predictions,
+        llrs,
+        application,
+        model_name,
+        verbose=False,
     ) -> None:
         self.application = application
         self.opt_predictions = opt_predictions
@@ -25,15 +31,16 @@ class BinaryBayesEvaluator:
             )
 
         udcf = self.get_udcf()
-        norm_dcf = self.get_normalized_dcf(udcf)
-        mindcf = self.get_mindcf(self.llrs)
+        norm_dcf = self.get_normalized_dcf()
+        mindcf = self.get_mindcf()
         cal_loss = (norm_dcf - mindcf) * 100
         if self.verbose:
             print("DCF: ", udcf)
             print("normalized DCF: ", norm_dcf)
             print("mindcf: ", mindcf)
             print("calibration loss: ", cal_loss)
-            print("\n")
+
+        print("-" * 40)
 
         return {
             "udcf": udcf,
@@ -65,7 +72,8 @@ class BinaryBayesEvaluator:
     def get_dcf(self, ep, p_fn, p_fp):
         return ep * p_fn + (1 - ep) * p_fp
 
-    def get_normalized_dcf(self, u_dcf):
+    def get_normalized_dcf(self):
+        u_dcf = self.get_udcf()
         norm = self.application.get_norm()
         return u_dcf / norm
 
@@ -76,9 +84,9 @@ class BinaryBayesEvaluator:
     # If we sort the scores, then, as we sweep the scores, we can have that at most one prediction changes everytime. We can then keep a running confusion matrix (or simply the number of false positives and false negatives) that is updated everytime we move the threshold
     # Auxiliary function, returns all combinations of Pfp, Pfn corresponding to all possible thresholds
     # We do not consider -inf as threshld, since we use as assignment llr > th, so the left-most score corresponds to all samples assigned to class 1 already
-    def get_all_Pfn_Pfp(self, llr):
-        llrSorter = np.argsort(llr)
-        llrSorted = llr[llrSorter]  # We sort the llrs
+    def get_all_Pfn_Pfp(self):
+        llrSorter = np.argsort(self.llrs)
+        llrSorted = self.llrs[llrSorter]  # We sort the llrs
         sorted_val_labels = self.evaluation_labels[
             llrSorter
         ]  # we sort the labels so that they are aligned to the llrs
@@ -129,54 +137,18 @@ class BinaryBayesEvaluator:
 
     # Note: for minDCF llrs can be arbitrary scores, since we are optimizing the threshold
     # We can therefore directly pass the logistic regression scores, or the SVM scores
-    def get_mindcf(self, llr, returnThreshold=False):
-        ep = self.application.get_effective_prior()
+    def get_mindcf(self, returnThreshold=False):
+        prior = self.application.get_effective_prior()
+        Cfn = self.application.c_fn
+        Cfp = self.application.c_fp
 
-        Pfn, Pfp, th = self.get_all_Pfn_Pfp(llr)
+        Pfn, Pfp, th = self.get_all_Pfn_Pfp()
 
-        dcf = self.get_dcf(ep, Pfn, Pfp)
         minDCF = (
-            dcf / self.application.get_dummy()
-        )  # We exploit broadcasting to compute all DCFs for all thresholds
-
+            (prior * Cfn * Pfn + (1 - prior) * Cfp * Pfp)
+        ) / self.application.get_dummy()  # We exploit broadcasting to compute all DCFs for all thresholds
         idx = np.argmin(minDCF)
         if returnThreshold:
             return minDCF[idx], th[idx]
         else:
             return minDCF[idx]
-
-
-
-
-"""
-
-    applications = [higher_fake_app]
-    application_to_pca_results = {
-        application.get_name(): [] for application in applications
-    }
-
-    for application in applications:
-        app_name = application.get_name()
-        for m in [1, 2, 3, 4, 5, 6]:
-            pcad_x_train, pcad_x_val = pca_fit(x_train, x_val, m)
-            mvg_classifier.fit(pcad_x_train, y_train)
-
-            pca_result = evaluator.evaluate_on_application(
-                classifier=mvg_classifier,
-                application=application,
-                val_samples=pcad_x_val,
-                val_labels=y_val,
-            )
-
-            application_to_pca_results[application.get_name()].append((m, pca_result))
-            print(pca_result)
-
-        print("-" * 40)
-        best_values_w_info = evaluator.get_best_app_result(
-            application_to_pca_results[app_name]
-        )
-        print(f"\nBest metrics for {app_name}: ")
-        for metric, (value, pca_components) in best_values_w_info.items():
-            print(f"The best {metric} is with PCA {pca_components} : {value}\n")
-
-"""

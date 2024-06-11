@@ -3,7 +3,7 @@ import numpy as np
 
 
 class Application:
-    def __init__(self, t_prior, c_fp, c_fn, name) -> None:
+    def __init__(self, t_prior, c_fp, c_fn, name="") -> None:
         self.t_prior = t_prior
         self.n_prior = 1 - t_prior
         self.c_fn = c_fn
