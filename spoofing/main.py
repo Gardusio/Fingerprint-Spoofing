@@ -3,13 +3,13 @@ from dataset.loader import DatasetLoader
 from preprocessing.pca import *
 from preprocessing.lda import *
 
-from mains.preliminary import *
-from mains.dim_red import *
-from mains.feature_selection import *
-from mains.lda_classification import *
-from mains.models_evaluation import *
-from mains.mvg_classification import *
-from mains.bayes_plots import *
+from scripts.preliminary import *
+from scripts.dim_red import *
+from scripts.feature_selection import *
+from scripts.lda_classification import *
+from scripts.models_evaluation import *
+from scripts.mvg_classification import *
+from scripts.bayes_plots import *
 
 from util.load_store import *
 
@@ -38,20 +38,19 @@ def main():
         verbose=True,
     )"""
 
-    # Run evaluation on main app, store the best models in ./models/best_models/. Use verbose to see results
+    # Run evaluation on main app, store the best models in ./models/best_models/.
+    # Use verbose to see results and store to store best models
     """
     run_mvgs_pca_evaluations_on_main_app(
         ds=ds,
         verbose=True,
-        store=True,
+        store=False,
         metrics=["mindcf", "norm_dcf"],
     )
     """
 
     models = read_models("./models/best_models/mindcf")
     run_bayes_plots(ds, models)
-
-    # """
 
 
 if __name__ == "__main__":
