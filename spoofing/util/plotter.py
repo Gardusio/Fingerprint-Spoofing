@@ -154,3 +154,15 @@ class Plotter:
         plt.ylabel("Detection Cost Function (DCF)")
         plt.legend()
         plt.show()
+
+    def plot_dcf_vs_reg(self, lambdas, dcfs, min_dcfs):
+        plt.figure(figsize=(10, 6))
+        plt.plot(lambdas, min_dcfs, label="minDCF", marker="o")
+        plt.plot(lambdas, dcfs, label="actDCF", marker="x")
+        plt.xscale("log", base=10)
+        plt.xlabel("Lambda (Regularization Strength)")
+        plt.ylabel("DCF")
+        plt.title("DCF vs. Regularization Strength (Lambda)")
+        plt.legend()
+        plt.grid(False)
+        plt.show()

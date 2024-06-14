@@ -53,10 +53,8 @@ class BaseMVGClassifier:
                     f"{self.__class__.__name__} error rate percentage: ",
                     err_rate * 100,
                 )
-        return llrs, predictions, err_rate
 
-    def with_name(self, name):
-        self.name = name
+        return llrs, predictions
 
     def get_name(self):
         return self.name
@@ -77,6 +75,18 @@ class BaseMVGClassifier:
 
 
 class MVGClassifier(BaseMVGClassifier):
+    def with_name(self, name, new):
+        self.name = name
+        if new:
+            return MVGClassifier(
+                c1_label=self.c1_label,
+                c2_label=self.c2_label,
+                application=self.application,
+                use_application=self.use_application,
+                name=name,
+            )
+        return self
+
     def get_class_mle(self, t_samples, t_labels, class_label):
         class_samples = self.get_class_samples(t_samples, t_labels, class_label)
         c_mean = vcol(class_samples.mean(axis=1))
@@ -84,7 +94,20 @@ class MVGClassifier(BaseMVGClassifier):
         return c_mean, c_cov_m
 
 
+# TODO: add optional mvg parameters ti avoid fitting if an mvg on the same ds as already been trained
 class NBClassifier(BaseMVGClassifier):
+    def with_name(self, name, new=False):
+        self.name = name
+        if new:
+            return NBClassifier(
+                c1_label=self.c1_label,
+                c2_label=self.c2_label,
+                application=self.application,
+                use_application=self.use_application,
+                name=name,
+            )
+        return self
+
     def get_class_mle(self, t_samples, t_labels, class_label):
         class_samples = self.get_class_samples(t_samples, t_labels, class_label)
         c_mean = vcol(class_samples.mean(axis=1))
@@ -92,7 +115,20 @@ class NBClassifier(BaseMVGClassifier):
         return c_mean, c_cov_m * np.identity(c_cov_m.shape[0])
 
 
+# TODO: add optional mvg parameters to re-use and avoid fitting if an mvg on the same ds as already been trained
 class TIEDClassifier(BaseMVGClassifier):
+    def with_name(self, name, new=False):
+        self.name = name
+        if new:
+            return TIEDClassifier(
+                c1_label=self.c1_label,
+                c2_label=self.c2_label,
+                application=self.application,
+                use_application=self.use_application,
+                name=name,
+            )
+        return self
+
     def get_class_mle(self, t_samples, t_labels, class_label):
         class_samples = self.get_class_samples(t_samples, t_labels, class_label)
         c_mean = vcol(class_samples.mean(axis=1))

@@ -10,16 +10,15 @@ from scripts.lda_classification import *
 from scripts.models_evaluation import *
 from scripts.mvg_classification import *
 from scripts.bayes_plots import *
+from scripts.logistic_regression import *
 
 from util.load_store import *
 
 
 def main():
 
-    # TODO: specify ds file path via args
     file_path = sys.argv[1] if len(sys.argv) == 2 else "./dataset/trainData.txt"
     loader = DatasetLoader(file_path=file_path)
-
     ds = loader.load()
 
     # run_preliminary_plots(ds, save_plots=True)
@@ -49,13 +48,25 @@ def main():
     )
     """
 
-    models = read_models("./models/best_models/mindcf")
-    run_bayes_plots(ds, models)
+    # models = read_models("./models/best_models/mindcf")
+    # run_bayes_plots(ds, models)
+
+    run_logistic_reg(ds)
+    run_logistic_reg_with_few_samples(ds)
+    run_logistic_prior_weighted_logreg(ds)
+    run_quadratic_logreg(ds)
+    run_logreg_after_centering(ds)
+
+    run_logregs_pca_evaluations_on_main_app(
+        ds=ds,
+        verbose=True,
+        store=True,
+        metrics=["mindcf", "norm_dcf"],
+    )
 
 
 if __name__ == "__main__":
     main()
-
 
 """
 def function_one(plt, ds):

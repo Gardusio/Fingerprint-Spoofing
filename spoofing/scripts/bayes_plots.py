@@ -5,6 +5,7 @@ from models.mvg_binary_classifiers import *
 from util.plotter import Plotter
 
 
+# TODO: refactor this to get a suitable object instead of checking PCA- is in the name
 def run_bayes_plots(ds, models):
 
     x_train, y_train, x_val, y_val = ds.split_ds_2to1()
@@ -43,8 +44,8 @@ def run_bayes_plot(model, x_val, y_val, title):
             model_name=model.get_name(),
         )
 
-        mindcfs.append(c_evaluator.get_mindcf())
+        mindcfs.append(c_evaluator.compute_mindcf())
 
-        actdcfs.append(c_evaluator.get_normalized_dcf())
+        actdcfs.append(c_evaluator.compute_dcf())
 
     plt.plot_bayes_errors(prior_log_odds, actdcfs, mindcfs, title=title)

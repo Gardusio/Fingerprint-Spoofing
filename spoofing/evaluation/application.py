@@ -15,9 +15,7 @@ class Application:
         tpcfn = self.t_prior * self.c_fn
         return tpcfn / (tpcfn + (n_prior * self.c_fp))
 
-    def get_name(
-        self,
-    ):
+    def get_name(self):
         return self.name
 
     def get_treshold(self):
@@ -28,7 +26,7 @@ class Application:
         return min(self.t_prior * self.c_fn, self.n_prior * self.c_fp)
 
     def info(self):
-        return f"{self.name}, True prior: {self.t_prior}, Fn Cost: {self.c_fn}, Fp Cost: {self.c_fp}"
+        return f"{self.name} - True prior: {self.t_prior}, Fn Cost: {self.c_fn}, Fp Cost: {self.c_fp}"
 
     def get_dummy(self):
         return np.minimum(self.t_prior * self.c_fn, self.n_prior * self.c_fp)

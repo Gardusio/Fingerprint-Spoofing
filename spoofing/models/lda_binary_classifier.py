@@ -35,7 +35,7 @@ class LDABinaryClassifier:
 
         if with_pca:
             # We now employ the projected mean diff as threshold, but we could employ the same observations as before on each m
-            results = self.get_accuracy_as_pca_dims_function(
+            results = self.accuracy_as_pca_dims_function(
                 training_samples,
                 training_labels,
                 validation_samples,
@@ -52,14 +52,14 @@ class LDABinaryClassifier:
         validation_samples_lda = Ut_lda.T @ self.validation_samples
         # We get the range by observing the training LDA histogram
         # The hope is within this range there's a better treshold than the projected mean diff
-        error_rate, best_threshold = self.get_best_threshold(
+        error_rate, best_threshold = self.compute_best_threshold(
             validation_samples_lda,
             np.arange(-1, 1, 0.001),
         )
 
         print("Best LDA threshold results in : ", error_rate, best_threshold)
 
-    def get_best_threshold(self, samples, range):
+    def compute_best_threshold(self, samples, range):
         num_samples = float(samples.shape[1])
         rates = []
         for i in range:
@@ -69,6 +69,7 @@ class LDABinaryClassifier:
 
         return min(rates, key=lambda t: t[0])
 
+    # TODO: refactor this
     def get_accuracy(self, samples, threshold):
         v_labels = self.validation_labels
         PVAL = np.zeros(shape=v_labels.shape, dtype=np.int32)
@@ -82,7 +83,7 @@ class LDABinaryClassifier:
         missed = self.get_accuracy(samples, t)
         return missed * 100 / n_samples
 
-    def get_accuracy_as_pca_dims_function(
+    def accuracy_as_pca_dims_function(
         self,
         training_samples,
         training_labels,

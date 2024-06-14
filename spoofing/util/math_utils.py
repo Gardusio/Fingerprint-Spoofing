@@ -10,6 +10,13 @@ def vcol(v):
     return v.reshape(v.shape[0], 1)
 
 
+def l2_norm(w):
+    return np.linalg.norm(w)
+
+
+# TODO: GET ACCURACY AND ERROR RATE
+
+
 def get_mean_vector(samples):
     return samples.mean(axis=1).reshape(samples.shape[0], 1)
 
@@ -112,3 +119,82 @@ def get_confusion_matrix(predictions, labels, num_classes):
     for p, l in zip(predictions, labels):
         confusion_matrix[p, l] += 1
     return confusion_matrix
+
+
+def logreg_grad(v, x_train, z_train, l, scores):
+    w = v[0:-1]
+
+    G = -z_train / (1.0 + np.exp(z_train * scores))
+    dJ_w = (vrow(G) * x_train).mean(1) + l * w.ravel()
+    dJ_b = G.mean()
+
+    return np.hstack([dJ_w, np.array(dJ_b)])
+
+
+def logreg_objective(v, x_train, z_train, l):
+    w, b = v[:-1], v[-1]
+    reg = l2_norm(w) ** 2 * (l / 2)
+
+    # Slow, use broadcasting instead
+    """    
+    S = 0
+    for i, x_i in enumerate(x_train):
+        z_i = (2 * y_train[i]) - 1
+        S = S + np.logaddexp(0, -z_i*(w.T*x_i + b))
+    J = reg + 1/n * S
+    """
+
+    scores = (vcol(w).T @ x_train).ravel() + b
+    f = reg + np.logaddexp(0, -z_train * scores).mean()
+
+    grad = logreg_grad(v, x_train, z_train, l, scores)
+
+    return (f, grad)
+
+
+def prior_weighted_logreg_grad(v, x_train, z_train, l, scores, t_weight, f_weight):
+    w = v[0:-1]
+
+    G = -z_train / (1.0 + np.exp(z_train * scores))
+    G[z_train > 0] *= t_weight
+    G[z_train < 0] *= f_weight
+
+    dJ_w = (vrow(G) * x_train).sum(1) + l * w.ravel()
+    dJ_b = G.sum()
+
+    return np.hstack([dJ_w, np.array(dJ_b)])
+
+
+def prior_weighted_logreg_objective(v, x_train, z_train, l, t_weight, f_weight):
+    w, b = v[:-1], v[-1]
+
+    reg = (l2_norm(w) ** 2) * (l / 2)
+
+    scores = (vcol(w).T @ x_train).ravel() + b
+
+    loss = np.logaddexp(0, -z_train * scores)
+    loss[z_train > 0] *= t_weight
+    loss[z_train < 0] *= f_weight
+    f = loss.sum() + reg
+
+    grad = prior_weighted_logreg_grad(
+        v, x_train, z_train, l, scores, t_weight, f_weight
+    )
+
+    return (f, grad)
+
+
+def get_err_rate(predictions, labels):
+    return (predictions != labels).sum() / float(labels.size)
+
+
+def expand_features(X):
+    num_features, num_samples = X.shape
+
+    xxT = X[:, np.newaxis, :] * X[np.newaxis, :, :]
+
+    vec_xxT = xxT.reshape(num_features * num_features, num_samples)
+
+    phi_X = np.vstack([vec_xxT, X])
+
+    return phi_X
