@@ -8,7 +8,7 @@ class BaseMVGClassifier:
         c1_label,
         c2_label,
         use_application=False,
-        application=(),
+        application=None,
         name="",
     ):
         self.name = name

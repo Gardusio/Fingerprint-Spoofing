@@ -11,6 +11,8 @@ from scripts.models_evaluation import *
 from scripts.mvg_classification import *
 from scripts.bayes_plots import *
 from scripts.logistic_regression import *
+from scripts.svm_classification import *
+
 
 from util.load_store import *
 
@@ -51,18 +53,24 @@ def main():
     # models = read_models("./models/best_models/mindcf")
     # run_bayes_plots(ds, models)
 
-    run_logistic_reg(ds)
-    run_logistic_reg_with_few_samples(ds)
-    run_logistic_prior_weighted_logreg(ds)
-    run_quadratic_logreg(ds)
-    run_logreg_after_centering(ds)
-
+    # run_logistic_reg(ds)
+    # run_logistic_reg_with_few_samples(ds)
+    # run_logistic_prior_weighted_logreg(ds)
+    # run_quadratic_logreg(ds)
+    # run_logreg_after_centering(ds)
+    """
     run_logregs_pca_evaluations_on_main_app(
         ds=ds,
         verbose=True,
         store=True,
         metrics=["mindcf", "norm_dcf"],
     )
+    """
+
+    # run_linear_svm_classification(ds)
+    # run_linear_svm_classification_after_centering(ds)
+    # run_quadratic_svm_classification(ds)
+    run_rbf_svm_classification(ds)
 
 
 if __name__ == "__main__":

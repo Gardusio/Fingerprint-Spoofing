@@ -9,7 +9,6 @@ from evaluation.logreg_evaluator import LogRegEvaluator
 
 ############################## LOG REG ###########################################
 
-
 def run_logregs_pca_evaluations_on_main_app(
     ds,
     verbose=False,
@@ -148,6 +147,8 @@ def get_logreg_regularization_pca_experiments(
     return logreg_experiments, w_logreg_experiments, q_logreg_experiments
 
 
+
+############################## MVGs ###########################################
 def run_mvgs_pca_evaluations_on_main_app(
     ds,
     verbose=False,
@@ -273,6 +274,7 @@ def get_pca_experiments(x_train, y_train, x_val, y_val):
     )
 
     return mvg_experiments, nb_experiments, tied_experiments
+
 
 
 def get_model_pca_experiments(x_train, y_train, x_val, y_val, classifier, *fit_args):

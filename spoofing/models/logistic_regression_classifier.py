@@ -77,6 +77,7 @@ class LogisticRegressionBinaryClassifier:
 
         return t_weight, f_weight
 
+    # TODO : store parameters in a class obj "parameters"
     def fit(self, x_train, y_train, l):
         n = x_train.shape[0]
         x0 = np.zeros(n + 1)

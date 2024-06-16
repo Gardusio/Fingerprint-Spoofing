@@ -155,14 +155,33 @@ class Plotter:
         plt.legend()
         plt.show()
 
-    def plot_dcf_vs_reg(self, lambdas, dcfs, min_dcfs):
+    @staticmethod
+    def plot_dcf_vs_reg(regs, dcfs, min_dcfs, model_name=""):
         plt.figure(figsize=(10, 6))
-        plt.plot(lambdas, min_dcfs, label="minDCF", marker="o")
-        plt.plot(lambdas, dcfs, label="actDCF", marker="x")
+        plt.plot(regs, min_dcfs, label="minDCF", marker="o")
+        plt.plot(regs, dcfs, label="actDCF", marker="x")
         plt.xscale("log", base=10)
-        plt.xlabel("Lambda (Regularization Strength)")
+        plt.xlabel("Regularization Strength")
         plt.ylabel("DCF")
-        plt.title("DCF vs. Regularization Strength (Lambda)")
+        plt.title(f"DCF vs. Regularization for {model_name}")
         plt.legend()
-        plt.grid(False)
+        plt.grid(True)
+        plt.show()
+
+    @staticmethod
+    def plot_multiple_dcf_vs_reg(regs, dcf_mindcf_couples, model_name=""):
+        plt.figure(figsize=(10, 6))
+
+        for gamma, dcf, mindcf in dcf_mindcf_couples:
+            label = f"{gamma}"
+            plt.plot(regs, dcf, label=f"{label} DCF", marker="o", linestyle="None")
+            plt.plot(
+                regs, mindcf, label=f"{label} minDCF", marker="x", linestyle="None"
+            )
+
+        plt.xlabel("Regularization")
+        plt.ylabel("DCF")
+        plt.title("DCF vs. Regularization for {model_name}")
+        plt.legend()
+        plt.grid(True)
         plt.show()
