@@ -1,4 +1,4 @@
-from evaluation.bayes_evaluator import BinaryBayesEvaluator
+from lib.evaluation.bayes_evaluator import BinaryBayesEvaluator
 
 
 class LogRegEvaluator:

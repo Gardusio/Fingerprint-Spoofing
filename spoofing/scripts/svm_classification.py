@@ -1,8 +1,8 @@
 import numpy as np
-from models.svm_classifier import SVMClassifier
-from evaluation.bayes_evaluator import BinaryBayesEvaluator
-from evaluation.application import Application
-from util.plotter import Plotter
+from lib.models.svm_classifier import SVMClassifier
+from lib.evaluation.bayes_evaluator import BinaryBayesEvaluator
+from lib.evaluation.application import Application
+from lib.util.plotter import Plotter
 from math import exp
 
 
@@ -45,6 +45,7 @@ def svm_classification(x_train, y_train, x_val, y_val, use_quadratic=False):
         print("-" * 40)
 
         if use_quadratic:
+            model_name = "QuadraticSVM"
             # NOTE: Using application to compute bayes decisions with svm in a context in which emp prior is different from app prior
             scores, predictions = fit_and_classify_kernel(
                 x_train,
@@ -55,9 +56,10 @@ def svm_classification(x_train, y_train, x_val, y_val, use_quadratic=False):
                 C,
                 eps=0,
                 kernel=SVMClassifier.polyKernel(2, 1),
-                name="QuadraticSVM",
+                name=model_name,
             )
         else:
+            model_name = "LinearSVM"
             # NOTE: Using application to compute bayes decisions with svm in a context in which emp prior is different from app prior
             scores, predictions = fit_and_classify_linear(
                 x_train, y_train, x_val, y_val, main_app, C
@@ -71,6 +73,7 @@ def svm_classification(x_train, y_train, x_val, y_val, use_quadratic=False):
             application=main_app,
             evaluation_labels=y_val,
             verbose=False,
+            model_name=model_name,
         )
 
         mindcf = evaluator.compute_mindcf()
@@ -78,14 +81,14 @@ def svm_classification(x_train, y_train, x_val, y_val, use_quadratic=False):
 
         c_to_dcfs.append((C, dcf, mindcf))
 
-        print(f"{'Quadratic' if use_quadratic else 'Linear'}SVM-C-{C}")
+        print(f"{model_name}-C-{C}")
         print("Error rate: %.1f" % (err * 100))
         print("minDCF - pT = 0.1: %.4f" % mindcf)
         print("actDCF - pT = 0.1: %.4f" % dcf)
         print("-" * 40)
 
     cs, dcfs, min_dcfs = zip(*c_to_dcfs)
-    Plotter().plot_dcf_vs_reg(cs, dcfs, min_dcfs, model_name="LinearSVM")
+    Plotter().plot_dcf_vs_reg(cs, dcfs, min_dcfs, model_name=model_name)
 
 
 def run_linear_svm_classification(ds):
@@ -117,11 +120,11 @@ def run_quadratic_svm_classification(ds):
 
     x_train, y_train, x_val, y_val = ds.split_ds_2to1()
 
-    svm_classification(x_train, y_train, x_val, y_val, use_kernel=True)
+    svm_classification(x_train, y_train, x_val, y_val, use_quadratic=True)
     print("-" * 80)
 
 
-def run_rbf_svm_classification(ds):
+def run_rbf_svm_classification(ds, verbose=True):
     main_app = Application(0.1, 1, 1)
 
     x_train, y_train, x_val, y_val = ds.split_ds_2to1()
@@ -166,8 +169,7 @@ def run_rbf_svm_classification(ds):
             print("-" * 40)
         c_to_gamma.append((C, gamma_to_dcfs))
 
-    cs, gammas = zip(*c_to_gamma)
-    Plotter().plot_multiple_dcf_vs_reg(cs, gammas[0], model_name="RBF")
+    # TODO: Print a line for each gamma
 
 
 """

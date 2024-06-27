@@ -1,7 +1,7 @@
-from preprocessing.pca import *
-from preprocessing.lda import *
+from lib.preprocessing.pca import *
+from lib.preprocessing.lda import *
 
-from util.plotter import Plotter
+from lib.util.plotter import Plotter
 
 
 def run_dim_red_on_ds(ds, save_plots=False):
@@ -25,7 +25,7 @@ def run_dim_red_on_ds(ds, save_plots=False):
         name="principal_components",
         save=save_plots,
     )
-    
+
     # LDA
     U_lda = -get_lda_matrix(samples, labels)
     LDA_samples = U_lda.T @ samples

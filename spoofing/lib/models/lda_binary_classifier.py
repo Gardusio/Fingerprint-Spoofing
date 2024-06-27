@@ -1,6 +1,6 @@
 import numpy as np
-from preprocessing import lda
-from preprocessing.pca import get_pca_matrix
+from lib.preprocessing import lda
+from lib.preprocessing.pca import get_pca_matrix
 
 
 class LDABinaryClassifier:

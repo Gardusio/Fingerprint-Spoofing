@@ -1,10 +1,8 @@
-from evaluation.bayes_evaluator import BinaryBayesEvaluator
-from models.mvg_binary_classifiers import *
+from lib.evaluation.bayes_evaluator import BinaryBayesEvaluator
+from lib.models.mvg_binary_classifiers import *
 
 
 class MVGEvaluator:
-
-    
 
     @staticmethod
     def evaluate_mvgs(

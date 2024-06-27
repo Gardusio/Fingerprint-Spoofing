@@ -1,5 +1,5 @@
 import numpy as np
-from preprocessing.pca import pca
+from lib.preprocessing.pca import pca
 
 
 class Dataset:
@@ -79,4 +79,3 @@ class Dataset:
         self.training_samples = self.training_samples[to_keep_mask, :]
         self.validation_samples = self.validation_samples[to_keep_mask, :]
         return self.training_samples, self.validation_samples
-

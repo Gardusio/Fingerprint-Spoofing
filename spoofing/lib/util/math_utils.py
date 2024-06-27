@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.special import logsumexp
 import math
 
 
@@ -18,7 +19,7 @@ def l2_norm(w):
 
 
 def get_mean_vector(samples):
-    return samples.mean(axis=1).reshape(samples.shape[0], 1)
+    return vcol(samples.mean(axis=1))
 
 
 def get_covariance_matrix(features_matrix):
@@ -28,6 +29,13 @@ def get_covariance_matrix(features_matrix):
     centered_features = features_matrix - ds_mean
 
     return (centered_features @ centered_features.T) / float(features_matrix.shape[1])
+
+
+def smooth_covariance_matrix(C, psi):
+    e_vectors, e_values, Vh = np.linalg.svd(C)
+    e_values[e_values < psi] = psi
+    CUpd = e_vectors @ (vcol(e_values) * e_vectors.T)
+    return CUpd
 
 
 def get_scatter(class_samples, ds_mean):
@@ -65,33 +73,53 @@ def get_between_class_covariance_matrix(samples, labels, nc=[0, 1]):
 def log_gaussian_density_set(samples, mean_vec, cov_matrix):
 
     ll = [
-        log_gaussian_density(samples[:, i : i + 1], mean_vec, cov_matrix)
+        log_gaussian_density(samples[:, i : i + 1], mean_vec, cov_matrix).ravel()
         for i in range(samples.shape[1])
     ]
 
     return np.array(ll)
 
 
-def log_gaussian_density(sample, ds_mean_vec, cov_matrix):
-    n_features = ds_mean_vec.shape[0]
+def log_gaussian_density(sample, mean_vec, cov_matrix):
+    n_features = mean_vec.shape[0]
+
     _, cov_matrix_log_det = np.linalg.slogdet(cov_matrix)
+
     inverse_cov_matrix = np.linalg.inv(cov_matrix)
 
-    centered_sample = sample - ds_mean_vec
+    centered_sample = sample - mean_vec
 
     log_2pi = math.log(2 * math.pi)
 
     result = (
-        (-(n_features / 2) * log_2pi)
-        - (cov_matrix_log_det / 2)
-        - (((centered_sample.T) @ inverse_cov_matrix @ centered_sample) / 2)
+        -0.5 * n_features * log_2pi
+        - 0.5 * cov_matrix_log_det
+        - 0.5 * (centered_sample * (inverse_cov_matrix @ centered_sample)).sum(0)
     )
 
-    return result.ravel()
+    return result
 
 
 def gaussian_density(sample_set, ds_mean_vec, cov_matrix):
     return np.exp(log_gaussian_density_set(sample_set, ds_mean_vec, cov_matrix).ravel())
+
+
+def log_gmm_density(X, gmm):
+    log_joint_densities = []
+
+    for weight, mean, covariance in gmm:
+        logpdf_conditional = log_gaussian_density(X, mean, covariance)
+        logpdf_joint = logpdf_conditional + np.log(weight)
+        log_joint_densities.append(logpdf_joint)
+
+    log_joint_densities = np.vstack(log_joint_densities)
+    log_density = logsumexp(log_joint_densities, axis=0)
+
+    return log_joint_densities, log_density
+
+
+def get_gmm_density_mean(x_train, gmm):
+    return log_gmm_density(x_train, gmm)[1].mean()
 
 
 def get_gaussian_to_feature_plotline(feature_samples, f_idx):

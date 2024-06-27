@@ -1,9 +1,9 @@
 import numpy as np
-from evaluation.application import Application
-from evaluation.bayes_evaluator import BinaryBayesEvaluator
-from models.logistic_regression_classifier import LogisticRegressionBinaryClassifier
-from util.plotter import Plotter
-from util.math_utils import get_err_rate, expand_features
+from lib.evaluation.application import Application
+from lib.evaluation.bayes_evaluator import BinaryBayesEvaluator
+from lib.models.logistic_regression_classifier import LogisticRegressionBinaryClassifier
+from lib.util.plotter import Plotter
+from lib.util.math_utils import get_err_rate, expand_features
 
 
 def logistic_regression_classification(x_train, y_train, x_val, y_val, weighted=False):

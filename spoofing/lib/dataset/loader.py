@@ -1,5 +1,5 @@
 import numpy as np
-from dataset.ds import Dataset
+from lib.dataset.ds import Dataset
 
 
 class DatasetLoader:

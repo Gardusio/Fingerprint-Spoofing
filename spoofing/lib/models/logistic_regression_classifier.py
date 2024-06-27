@@ -1,7 +1,7 @@
 import numpy as np
-from evaluation.application import Application
+from lib.evaluation.application import Application
 from scipy.optimize import fmin_l_bfgs_b
-from util.math_utils import (
+from lib.util.math_utils import (
     prior_weighted_logreg_objective,
     logreg_objective,
 )
@@ -116,10 +116,8 @@ class LogisticRegressionBinaryClassifier:
 
         if self.weighted:
             prior = self.application.get_effective_prior()
-            print("Effective prior: ", prior)
         else:
             prior = self.empirical_prior
-            print("Empirical prior: ", prior)
 
         return scores - np.log(prior / (1 - prior))
 

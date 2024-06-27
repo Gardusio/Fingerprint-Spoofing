@@ -1,13 +1,14 @@
-from evaluation.mvgs_evaluator import MVGEvaluator
-from evaluation.application import Application
-from preprocessing.pca import pca_fit
-from models.mvg_binary_classifiers import *
-from util.load_store import store_models
-from models.logistic_regression_classifier import *
-from evaluation.logreg_evaluator import LogRegEvaluator
+from lib.evaluation.mvgs_evaluator import MVGEvaluator
+from lib.evaluation.application import Application
+from lib.preprocessing.pca import pca_fit
+from lib.models.mvg_binary_classifiers import *
+from lib.util.load_store import store_models
+from lib.models.logistic_regression_classifier import *
+from lib.evaluation.logreg_evaluator import LogRegEvaluator
 
 
 ############################## LOG REG ###########################################
+
 
 def run_logregs_pca_evaluations_on_main_app(
     ds,
@@ -15,8 +16,8 @@ def run_logregs_pca_evaluations_on_main_app(
     metrics=["mindcf", "norm_dcf"],
     store=False,
     store_paths=[
-        "./models/best_models/mindcf/logreg",
-        "./models/best_models/dcf/logreg",
+        "../best-models/mindcf/logreg",
+        "../best-models/dcf/logreg",
     ],
 ):
     (
@@ -147,7 +148,6 @@ def get_logreg_regularization_pca_experiments(
     return logreg_experiments, w_logreg_experiments, q_logreg_experiments
 
 
-
 ############################## MVGs ###########################################
 def run_mvgs_pca_evaluations_on_main_app(
     ds,
@@ -274,7 +274,6 @@ def get_pca_experiments(x_train, y_train, x_val, y_val):
     )
 
     return mvg_experiments, nb_experiments, tied_experiments
-
 
 
 def get_model_pca_experiments(x_train, y_train, x_val, y_val, classifier, *fit_args):

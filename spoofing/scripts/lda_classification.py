@@ -1,4 +1,4 @@
-from models.lda_binary_classifier import LDABinaryClassifier
+from lib.models.lda_binary_classifier import LDABinaryClassifier
 
 
 def run_lda_classification(ds):

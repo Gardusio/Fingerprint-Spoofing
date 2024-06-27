@@ -1,5 +1,5 @@
 import numpy as np
-from util.math_utils import *
+from lib.util.math_utils import *
 
 
 class BaseMVGClassifier:

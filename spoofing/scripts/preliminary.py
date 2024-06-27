@@ -1,4 +1,4 @@
-from util.plotter import Plotter
+from lib.util.plotter import Plotter
 
 
 def run_preliminary_plots(ds, save_plots=False):

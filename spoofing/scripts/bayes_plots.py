@@ -1,8 +1,8 @@
-from evaluation.bayes_evaluator import BinaryBayesEvaluator
-from evaluation.application import Application
-from preprocessing.pca import pca_fit
-from models.mvg_binary_classifiers import *
-from util.plotter import Plotter
+from lib.evaluation.bayes_evaluator import BinaryBayesEvaluator
+from lib.evaluation.application import Application
+from lib.preprocessing.pca import pca_fit
+from lib.models.mvg_binary_classifiers import *
+from lib.util.plotter import Plotter
 
 
 # TODO: refactor this to get a suitable object instead of checking PCA- is in the name

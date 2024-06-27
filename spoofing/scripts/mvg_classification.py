@@ -1,5 +1,5 @@
-from preprocessing.pca import pca_fit
-from models.mvg_binary_classifiers import *
+from lib.preprocessing.pca import pca_fit
+from lib.models.mvg_binary_classifiers import *
 
 
 # MVG CLASSIFICATION WITH NB AND TIED

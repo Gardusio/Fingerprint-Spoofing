@@ -1,5 +1,5 @@
 import numpy as np
-from util.math_utils import get_confusion_matrix
+from lib.util.math_utils import get_confusion_matrix
 
 
 class BinaryBayesEvaluator:

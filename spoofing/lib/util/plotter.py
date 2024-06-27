@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from util.math_utils import *
+from lib.util.math_utils import *
 
 
 class Plotter:
@@ -34,7 +34,7 @@ class Plotter:
                 axs[row, col].legend()
         plt.tight_layout()
         if save:
-            plt.savefig(f"./analysis/plots/features_hists/{name}.pdf")
+            plt.savefig(f"../analysis/plots/features_hists/{name}.pdf")
         plt.show()
 
     def plot_hist_x(self, ax, data, **kwargs):
@@ -62,7 +62,7 @@ class Plotter:
             plt.tight_layout()
             if save:
                 plt.savefig(
-                    f"./analysis/plots/features_hists/{name}_%d_hist.pdf" % (f_idx + 1)
+                    f"../analysis/plots/features_hists/{name}_%d_hist.pdf" % (f_idx + 1)
                 )
         plt.show()
 
@@ -74,7 +74,7 @@ class Plotter:
         plt.scatter(x=counterfeits[i], y=counterfeits[j], label="Counterfeits")
         plt.legend()
         if save:
-            plt.savefig(f"./analysis/plots/scatter_plots/scatter_{i}-{j}_hist.pdf")
+            plt.savefig(f"../analysis/plots/scatter_plots/scatter_{i}-{j}_hist.pdf")
 
     def plot_scatters(self, genuines, counterfeits):
         self.plot_scatter(genuines, counterfeits, 0, 1)
@@ -102,7 +102,7 @@ class Plotter:
 
         if save:
             plt.savefig(
-                f"./analysis/plots/features_hists/f_%d_hist_with_gaussian.pdf"
+                f"../analysis/plots/features_hists/f_%d_hist_with_gaussian.pdf"
                 % (f_idx + 1)
             )
         plt.legend()

@@ -1,6 +1,6 @@
 import numpy as np
 
-from util.math_utils import get_covariance_matrix
+from lib.util.math_utils import get_covariance_matrix
 
 
 def get_pca_matrix(samples, m):

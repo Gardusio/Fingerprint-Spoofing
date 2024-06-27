@@ -1,4 +1,4 @@
-from models.mvg_binary_classifiers import *
+from lib.models.mvg_binary_classifiers import *
 
 
 def run_feature_selection_on_mvgs(ds, to_drop=[4, 5]):
