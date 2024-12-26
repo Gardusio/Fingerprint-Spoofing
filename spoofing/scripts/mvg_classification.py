@@ -23,12 +23,6 @@ def run_mvg_classification(ds):
     nb_classifier.classify(x_val, y_val, verbose=True)
     tied_classifier.classify(x_val, y_val, verbose=True)
 
-    # TODO: WHAT'S THIS
-    # g_corr_matrix = get_pearson_matrix(mvg_classifier.parameters["g_mle"][1])
-    # c_corr_matrix = get_pearson_matrix(mvg_classifier.parameters["c_mle"][1])
-    # plt.plot_correlation_matrixes(g_corr_matrix, c_corr_matrix)
-    print("\n")
-
     print("-" * 80)
 
 

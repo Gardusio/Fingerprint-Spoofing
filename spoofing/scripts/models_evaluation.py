@@ -154,8 +154,10 @@ def run_mvgs_pca_evaluations_on_main_app(
     verbose=False,
     metrics=["mindcf", "norm_dcf"],
     store=False,
-    store_paths=["./models/best_models/mindcf/mvg", "./models/best_models/dcf/mvg"],
+    store_paths=["/mindcf/mvg", "dcf/mvg"],
 ):
+
+    # model_best_metric is a tuple (min-metric, model)
     (
         (mvg_best_mindcf, mvg_best_dcf),
         (nb_best_mindcf, nb_best_dcf),
@@ -194,7 +196,6 @@ def evaluate_mvgs_on_main_app(ds, verbose=False, metrics=["mindcf", "norm_dcf"])
         run_mvgs_pca_evaluations(
             ds,
             [higher_fake_app],
-            return_best_only=True,
             verbose=verbose,
         )
     )
@@ -214,15 +215,10 @@ def evaluate_mvgs_on_main_app(ds, verbose=False, metrics=["mindcf", "norm_dcf"])
 def run_mvgs_pca_evaluations(
     ds,
     applications,
-    return_best_only,
     verbose=False,
 ):
     """
     Use this to evaluate on multiple applications,
-
-    if return best only return, for each application and for each metric, only the best performing model and stats.
-
-    Otherwise return all models and stats
     """
     print("-" * 40)
     x_train, y_train, x_val, y_val = ds.split_ds_2to1()
@@ -246,12 +242,8 @@ def run_mvgs_pca_evaluations(
         verbose=verbose,
     )
 
-    if return_best_only:
-        print_best_report(applications, mvg_results[0], nb_results[0], tied_results[0])
-        return mvg_results[0], nb_results[0], tied_results[0]
-
-    print("-" * 40)
-    return mvg_results[1], nb_results[1], tied_results[1]
+    print_best_report(applications, mvg_results[0], nb_results[0], tied_results[0])
+    return mvg_results[0], nb_results[0], tied_results[0]
 
 
 def get_pca_experiments(x_train, y_train, x_val, y_val):
@@ -317,5 +309,5 @@ def print_apps_report(applications, models_results):
             for metric, result in best.items():
                 value, model = result
                 print(
-                    f"{model.get_name()} is the best model considering: {metric} - {value}"
+                    f"{model.get_name()} is the best model considering: {metric} - {value:.3f}"
                 )

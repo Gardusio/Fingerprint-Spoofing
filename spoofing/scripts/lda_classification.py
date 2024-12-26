@@ -16,8 +16,12 @@ def run_lda_classification(ds):
         c2_label=0,
     )
 
-    lda_classifier.classify_with_mean_dist_treshold()
+    print("-" * 40)
+    print("\nClassification best treshold selection with PCA...")
     lda_classifier.classify_with_best_threshold()
+    lda_classifier.classify_with_best_threshold_pca()
+    print("-" * 40)
+    print("\nRunning min_dist treshold and  PCA...")
     lda_classifier.classify_with_mean_dist_treshold(with_pca=True)
 
     print()

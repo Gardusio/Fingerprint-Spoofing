@@ -76,6 +76,7 @@ class Dataset:
     def drop_features(self, to_drop=[]):
         to_keep_mask = np.ones(self.training_samples.shape[0], dtype=bool)
         to_keep_mask[to_drop] = False
-        self.training_samples = self.training_samples[to_keep_mask, :]
-        self.validation_samples = self.validation_samples[to_keep_mask, :]
-        return self.training_samples, self.validation_samples
+        return (
+            self.training_samples[to_keep_mask, :],
+            self.validation_samples[to_keep_mask, :],
+        )

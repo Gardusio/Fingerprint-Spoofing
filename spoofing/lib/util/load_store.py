@@ -20,5 +20,6 @@ def store_models(path, models):
     for model in models:
         name = "".join(model.get_name().split()).replace(":", "-")
         print(f"Saving model {name}...")
-        with open(f"{path}/{name}.pkl", "wb") as file:
+        os.makedirs(f"./best-models/{path}", exist_ok=True)
+        with open(f"./best-models/{path}/{name}.pkl", "wb") as file:
             pickle.dump(model, file)

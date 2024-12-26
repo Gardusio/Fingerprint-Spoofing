@@ -34,7 +34,7 @@ def run_bayes_plot(model, x_val, y_val, title):
 
         model.with_application(current_application)
 
-        llrs, opt_predictions, err_rate = model.classify(x_val, y_val)
+        llrs, opt_predictions = model.classify(x_val, y_val)
 
         c_evaluator = BinaryBayesEvaluator(
             evaluation_labels=y_val,

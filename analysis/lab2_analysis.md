@@ -8,12 +8,10 @@
 
 - The Genuine set shows more variance for this feature [G_var: 1,43, C_var: 0.57].
 
-Taken alone, this feature can't provide a good decision boundary.
+Taken alone, this feature can't provide a good decision boundary since there's a large overlap between the two classes.
 
 #### Feature 2
-- The histogram for feature 2 shows both classes have a good approximation of a gaussian as the distribution for this feature. There's one mode around the mean for both. 
-
-The situation is dual with respect of feature 1
+- The histogram for feature 2 shows both classes have a good approximation of a gaussian as the distribution for this feature. There's one mode around the mean for both, but the situation is dual with respect of feature 1
 
 - There's a large overlap around zero, that is approximately the mean of both classes [G_mean: -0.0085, C_mean: 0.018]. Counterfeits values for f2 can take all the values of Genuines and more. Counterfeits set shows it can reach greather absolute values for this feature (Fake's never reach around 4/-4)<br>
 
@@ -53,7 +51,7 @@ Taken alone, this feature can't provide a good decision boundary.
 #### Feature 5
 - Genuines seems to follow a bimodal gaussian distribution with two modes around -1 and 1, while Counterfeits shows a trimodal distribution with peaks around -1, 0, 1.
 
-- Therefore, there's some overlap in the ranges [-2, 0] and [0,2] while in [-0,5, 0.5]  there are very few Genuine samples. 
+- Therefore, there's some overlap in the ranges [-2, 0] and [0,2] while in [-0,5, 0.5] there are very few Genuine samples. 
 
 
 #### Feature 6

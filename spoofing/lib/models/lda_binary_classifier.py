@@ -29,7 +29,7 @@ class LDABinaryClassifier:
 
         error_rate = self.get_error_rate(validation_samples_lda, threshold)
         print(
-            f"LDA classification error rate with threshold {threshold}: ",
+            f"\nLDA classification error rate with threshold {threshold:.4f}: ",
             error_rate,
         )
 
@@ -43,21 +43,51 @@ class LDABinaryClassifier:
 
             for m, t, error_rate in results:
                 print(
-                    f"Error rate with {m} pca dimensions and threshold {t} is: ",
+                    f"Error rate with {m} pca dimensions and threshold {t:.4f} is: ",
                     error_rate,
                 )
 
-    def classify_with_best_threshold(self):
+    def classify_with_best_threshold(self, with_pca=False):
         Ut_lda = lda.get_lda_matrix(self.training_samples, self.training_labels)
         validation_samples_lda = Ut_lda.T @ self.validation_samples
         # We get the range by observing the training LDA histogram
         # The hope is within this range there's a better treshold than the projected mean diff
+
         error_rate, best_threshold = self.compute_best_threshold(
             validation_samples_lda,
             np.arange(-1, 1, 0.001),
         )
 
-        print("Best LDA threshold results in : ", error_rate, best_threshold)
+        print(
+            f"\nBest LDA threshold without PCA results in :  {error_rate*100:.2f}, t = {best_threshold:.3f}"
+        )
+
+    def classify_with_best_threshold_pca(self):
+        results = []
+        pca_dims = [1, 2, 3, 4, 5, 6]
+        for m in pca_dims:
+            Pi = get_pca_matrix(self.training_samples, m)
+            training_pcad_m = Pi.T @ self.training_samples
+
+            Ui = lda.get_lda_matrix(training_pcad_m, self.training_labels)
+            training_pcad_m_lda = Ui.T @ training_pcad_m
+            Ui = self.orient_lda_matrix(Ui, training_pcad_m_lda, self.training_labels)
+
+            validation_pcad_m = Pi.T @ self.validation_samples
+            validation_pcad_lda_m = Ui.T @ validation_pcad_m
+
+            error_rate, best_threshold = self.compute_best_threshold(
+                validation_pcad_lda_m,
+                np.arange(-1, 1, 0.001),
+            )
+
+            print(
+                f"Error rate with {m} PCA dimensions and threshold {best_threshold:.4f} is: {error_rate*100:.2f}"
+            )
+
+            results.append((m, best_threshold, error_rate * 100))
+
+        return results
 
     def compute_best_threshold(self, samples, range):
         num_samples = float(samples.shape[1])
@@ -88,7 +118,7 @@ class LDABinaryClassifier:
         training_samples,
         training_labels,
         validation_samples,
-        pca_dims=[2, 3, 4, 5],
+        pca_dims=[1, 2, 3, 4, 5, 6],
     ):
         results = []
         for m in pca_dims:
@@ -103,9 +133,11 @@ class LDABinaryClassifier:
 
             validation_pcad_m = Pi.T @ validation_samples
             validation_pcad_lda_m = Ui.T @ validation_pcad_m
+
             pmean_diff_threshold_m = self.get_lda_mean_dist_treshold(
                 training_pcad_m_lda, training_labels
             )
+
             error_rate_m = self.get_error_rate(
                 validation_pcad_lda_m,
                 pmean_diff_threshold_m,

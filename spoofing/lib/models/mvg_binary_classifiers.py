@@ -49,10 +49,7 @@ class BaseMVGClassifier:
             if self.use_application:
                 print("\nClassifying using Application: ", self.application.info())
             else:
-                print(
-                    f"{self.__class__.__name__} error rate percentage: ",
-                    err_rate * 100,
-                )
+                print(f"{self.name} error rate percentage: {err_rate * 100:.2f}")
 
         return llrs, predictions
 

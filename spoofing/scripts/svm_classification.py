@@ -170,30 +170,3 @@ def run_rbf_svm_classification(ds, verbose=True):
         c_to_gamma.append((C, gamma_to_dcfs))
 
     # TODO: Print a line for each gamma
-
-
-"""
-if __name__ == "__main__":
-
-    for kernelFunc in [
-        polyKernel(2, 0),
-        polyKernel(2, 1),
-        rbfKernel(1.0),
-        rbfKernel(10.0),
-    ]:
-        for eps in [0.0, 1.0]:
-            fScore = train_dual_SVM_kernel(x_train, y_train, 1.0, kernelFunc, eps)
-            SVAL = fScore(DVAL)
-            PVAL = (SVAL > 0) * 1
-            err = (PVAL != y_val).sum() / float(y_val.size)
-            print("Error rate: %.1f" % (err * 100))
-            print(
-                "minDCF - pT = 0.5: %.4f"
-                % bayesRisk.compute_minDCF_binary_fast(SVAL, y_val, 0.5, 1.0, 1.0)
-            )
-            print(
-                "actDCF - pT = 0.5: %.4f"
-                % bayesRisk.compute_actDCF_binary_fast(SVAL, y_val, 0.5, 1.0, 1.0)
-            )
-            print()
-"""

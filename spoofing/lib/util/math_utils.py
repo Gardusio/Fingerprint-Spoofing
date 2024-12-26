@@ -30,17 +30,16 @@ def get_covariance_matrix(features_matrix):
 
     return (centered_features @ centered_features.T) / float(features_matrix.shape[1])
 
+def get_scatter(class_samples, ds_mean):
+    class_mean = get_mean_vector(class_samples)
+    return (class_mean - ds_mean) @ (class_mean - ds_mean).T
+
 
 def smooth_covariance_matrix(C, psi):
     e_vectors, e_values, Vh = np.linalg.svd(C)
     e_values[e_values < psi] = psi
     CUpd = e_vectors @ (vcol(e_values) * e_vectors.T)
     return CUpd
-
-
-def get_scatter(class_samples, ds_mean):
-    class_mean = get_mean_vector(class_samples)
-    return (class_mean - ds_mean) @ (class_mean - ds_mean).T
 
 
 def get_within_class_covariance_matrix(samples, labels, nc=[0, 1]):
@@ -138,8 +137,11 @@ def get_gaussian_to_feature_plotline(feature_samples, f_idx):
     return plot, gaussian_pdf
 
 
-def get_pearson_correlation_matrix(cov_m):
-    return cov_m / (vcol(cov_m.diagonal() ** 0.5) * vrow(cov_m.diagonal() ** 0.5))
+def get_pearson_correlation_matrix(cov_matrix):
+    std_dev = np.sqrt(np.diag(cov_matrix))
+    correlation_matrix = cov_matrix / np.outer(std_dev, std_dev)
+    np.fill_diagonal(correlation_matrix, 1)
+    return correlation_matrix
 
 
 def get_confusion_matrix(predictions, labels, num_classes):

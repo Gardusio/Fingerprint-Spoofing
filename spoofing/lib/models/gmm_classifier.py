@@ -1,6 +1,4 @@
 import numpy as np
-import scipy.special
-import matplotlib.pyplot as plt
 from util.GMM_load import *
 from util.math_utils import (
     vcol,

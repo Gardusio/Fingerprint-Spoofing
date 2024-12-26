@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
 from lib.util.math_utils import *
 
 
@@ -34,7 +35,7 @@ class Plotter:
                 axs[row, col].legend()
         plt.tight_layout()
         if save:
-            plt.savefig(f"../analysis/plots/features_hists/{name}.pdf")
+            plt.savefig(f"../analysis/plots/features_hists/{name}.png")
         plt.show()
 
     def plot_hist_x(self, ax, data, **kwargs):
@@ -62,7 +63,7 @@ class Plotter:
             plt.tight_layout()
             if save:
                 plt.savefig(
-                    f"../analysis/plots/features_hists/{name}_%d_hist.pdf" % (f_idx + 1)
+                    f"../analysis/plots/features_hists/{name}_%d_hist.png" % (f_idx + 1)
                 )
         plt.show()
 
@@ -74,12 +75,12 @@ class Plotter:
         plt.scatter(x=counterfeits[i], y=counterfeits[j], label="Counterfeits")
         plt.legend()
         if save:
-            plt.savefig(f"../analysis/plots/scatter_plots/scatter_{i}-{j}_hist.pdf")
+            plt.savefig(f"../analysis/plots/scatter_plots/scatter_{i}-{j}_hist.png")
 
-    def plot_scatters(self, genuines, counterfeits):
-        self.plot_scatter(genuines, counterfeits, 0, 1)
-        self.plot_scatter(genuines, counterfeits, 2, 3)
-        self.plot_scatter(genuines, counterfeits, 4, 5)
+    def plot_scatters(self, genuines, counterfeits, save_plots=False):
+        self.plot_scatter(genuines, counterfeits, 0, 1, save=save_plots)
+        self.plot_scatter(genuines, counterfeits, 2, 3, save=save_plots)
+        self.plot_scatter(genuines, counterfeits, 4, 5, save=save_plots)
         plt.show()
 
     def plot_1d_gau(
@@ -102,7 +103,7 @@ class Plotter:
 
         if save:
             plt.savefig(
-                f"../analysis/plots/features_hists/f_%d_hist_with_gaussian.pdf"
+                f"../analysis/plots/features_hists/f_%d_hist_with_gaussian.png"
                 % (f_idx + 1)
             )
         plt.legend()
@@ -142,8 +143,34 @@ class Plotter:
         plt.show()
 
     def plot_correlation_matrixes(self, g_corr_matrix, c_corr_matrix):
-        plt.plot_corr_matrix(g_corr_matrix, "Correlation matrix for genuines")
-        plt.plot_corr_matrix(c_corr_matrix, "Correlation matrix for counterfeits")
+        # Set up the matplotlib figure
+        fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+        # Plot the correlation matrix for g_cov_matrix
+        sns.heatmap(
+            g_corr_matrix,
+            annot=True,
+            fmt=".2f",
+            ax=axes[0],
+            cmap="coolwarm",
+            cbar_kws={"label": "Correlation"},
+        )
+        axes[0].set_title("Correlation Matrix from Genuines")
+
+        # Plot the correlation matrix for c_cov_matrix
+        sns.heatmap(
+            c_corr_matrix,
+            annot=True,
+            fmt=".2f",
+            ax=axes[1],
+            cmap="coolwarm",
+            cbar_kws={"label": "Correlation"},
+        )
+        axes[1].set_title("Correlation Matrix from Counterfeits")
+
+        # Adjust layout
+        plt.tight_layout()
+        plt.show()
 
     def plot_bayes_errors(self, prior_log_odds, actdcfs, mindcfs, title):
         plt.plot(prior_log_odds, actdcfs, label="act DCF eps 0.001", color="r")
