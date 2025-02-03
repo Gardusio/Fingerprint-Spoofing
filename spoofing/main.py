@@ -12,7 +12,7 @@ from scripts.mvg_classification import *
 from scripts.bayes_plots import *
 from scripts.logistic_regression import *
 from scripts.svm_classification import *
-
+from scripts.gmm_classification import *
 
 from lib.util.load_store import *
 
@@ -22,11 +22,11 @@ def main():
     file_path = sys.argv[1] if len(sys.argv) == 2 else "./dataset/trainData.txt"
     loader = DatasetLoader(file_path=file_path)
     ds = loader.load()
-    """
-    # run_preliminary_plots(ds, save_plots=False)
-    # run_dim_red_on_ds(ds, save_plots=False)
-    # run_lda_classification(ds)
-    # run_gaussians_to_features_plot(ds, save_plots=False)
+
+    run_preliminary_plots(ds, save_plots=False)
+    run_dim_red_on_ds(ds, save_plots=False)
+    run_lda_classification(ds)
+    run_gaussians_to_features_plot(ds, save_plots=False)
 
     # Classify with MVG, NB, TIED on the unmodified dataset
     run_mvg_classification(ds)
@@ -39,7 +39,6 @@ def main():
     # Classify with MVG, NB, TIED with only 3,4
     run_feature_selection_on_mvgs(ds, to_drop=[0, 1, 4, 5])
 
-    
     # Run MVG and Variants models evaluation on 3 different applications, use verbose=True to see the results
     mvg_results, nb_results, tied_results = run_mvgs_pca_evaluations(
         ds,
@@ -47,8 +46,7 @@ def main():
         return_best_only=True,
         verbose=True,
     )
-    
-    """
+
     # Run evaluation on main app, store the best models in ./models/best_models/.
     # Use verbose to see results and store to store best models
     run_mvgs_pca_evaluations_on_main_app(
@@ -58,10 +56,9 @@ def main():
         metrics=["mindcf", "norm_dcf"],
     )
 
-    # models = read_models("./best-models/mindcf/mvg/")
-    # run_bayes_plots(ds, models)
+    models = read_models("./best-models/mindcf/mvg/")
+    run_bayes_plots(ds, models)
 
-    """
     run_logistic_reg(ds)
     run_logistic_reg_with_few_samples(ds)
     run_logistic_prior_weighted_logreg(ds)
@@ -79,7 +76,8 @@ def main():
     run_linear_svm_classification_after_centering(ds)
     run_quadratic_svm_classification(ds)
     run_rbf_svm_classification(ds)
-    """
+
+    run_gmm_classification(ds)
 
 
 if __name__ == "__main__":

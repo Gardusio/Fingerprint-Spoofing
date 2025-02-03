@@ -22,13 +22,11 @@ def get_mean_vector(samples):
     return vcol(samples.mean(axis=1))
 
 
-def get_covariance_matrix(features_matrix):
+def get_covariance_matrix(D):
+    ds_mean = D.mean(axis=1).reshape(D.shape[0], 1)
+    D_c = D - ds_mean
+    return (D_c @ D_c.T) / float(D.shape[1])
 
-    ds_mean = features_matrix.mean(axis=1).reshape(features_matrix.shape[0], 1)
-
-    centered_features = features_matrix - ds_mean
-
-    return (centered_features @ centered_features.T) / float(features_matrix.shape[1])
 
 def get_scatter(class_samples, ds_mean):
     class_mean = get_mean_vector(class_samples)
